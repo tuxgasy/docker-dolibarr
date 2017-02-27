@@ -13,25 +13,29 @@ done
 mysql -u $DOLI_DB_USER -p${DOLI_DB_PASSWORD} -h $DOLI_DB_HOST $DOLI_DB_NAME -e "SELECT * FROM llx_const" > /dev/null 2>&1
 if [ $? -ne 0 ]; then
 
-	echo "Importing tables SQL ..."
 	for f in /var/www/html/install/mysql/tables/*.sql; do
 		if [[ $f != *.key.sql ]]; then
-			mysql -u $DOLI_DB_USER -p${DOLI_DB_PASSWORD} -h $DOLI_DB_HOST $DOLI_DB_NAME < $f > /dev/null 2>&1
+      echo "Importing table from `basename $f`..."
+      sed -i 's/--.*//g;' $f # remove all comment
+			mysql -u $DOLI_DB_USER -p${DOLI_DB_PASSWORD} -h $DOLI_DB_HOST $DOLI_DB_NAME < $f
 		fi
 	done
 
-	echo "Importing tables key SQL ..."
 	for f in /var/www/html/install/mysql/tables/*.key.sql; do
+    echo "Importing table key from `basename $f`..."
+    sed -i 's/--.*//g;' $f
 		mysql -u $DOLI_DB_USER -p${DOLI_DB_PASSWORD} -h $DOLI_DB_HOST $DOLI_DB_NAME < $f > /dev/null 2>&1
 	done
 
-	echo "Importing functions SQL ..."
 	for f in /var/www/html/install/mysql/functions/*.sql; do
+    echo "Importing `basename $f`..."
+    sed -i 's/--.*//g;' $f
 		mysql -u $DOLI_DB_USER -p${DOLI_DB_PASSWORD} -h $DOLI_DB_HOST $DOLI_DB_NAME < $f > /dev/null 2>&1
 	done
 
-	echo "Importing data SQL ..."
 	for f in /var/www/html/install/mysql/data/*.sql; do
+    echo "Importing data from `basename $f`..."
+    sed -i 's/--.*//g;' $f
 		mysql -u $DOLI_DB_USER -p${DOLI_DB_PASSWORD} -h $DOLI_DB_HOST $DOLI_DB_NAME < $f > /dev/null 2>&1
 	done
 
