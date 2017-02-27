@@ -3,7 +3,12 @@ FROM php:5.6-apache
 MAINTAINER Garcia MICHEL <garcia@soamichel.fr>
 
 ENV DOLI_VERSION 4.0.0
-ENV DOLI_DATABASE_HOST mysql
+
+ENV DOLI_DB_HOST mysql
+ENV DOLI_DB_USER doli
+ENV DOLI_DB_PASSWORD doli_pass
+ENV DOLI_DB_NAME dolidb
+
 ENV DOLI_ADMIN_LOGIN admin
 ENV DOLI_ADMON_PASSWORD admin
 ENV DOLI_URL_ROOT 'http://localhost'
