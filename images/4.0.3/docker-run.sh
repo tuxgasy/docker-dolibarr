@@ -64,8 +64,7 @@ if [ $? -ne 0 ]; then
 EOF
 
 	touch /var/www/documents/install.lock
-	chown -R www-data:www-data /var/www/
-	chmod 400 /var/www/html/conf/conf.php
+	chown www-data:www-data /var/www/html/conf/conf.php && chmod 400 /var/www/html/conf/conf.php
 	chmod 400 /var/www/documents/install.lock
 
 	cat <<EOF > /usr/local/etc/php/php.ini

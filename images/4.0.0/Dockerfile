@@ -32,6 +32,8 @@ ADD https://github.com/Dolibarr/dolibarr/archive/${DOLI_VERSION}.zip /tmp/doliba
 RUN unzip -q /tmp/dolibarr.zip -d /tmp/dolibarr
 RUN cp -r /tmp/dolibarr/dolibarr-${DOLI_VERSION}/htdocs/* /var/www/html/ && rm -rf /tmp/dolibarr
 
+RUN chown -R www-data:www-data /var/www/
+
 VOLUME /var/www/documents
 
 EXPOSE 80
