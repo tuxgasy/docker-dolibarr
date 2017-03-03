@@ -13,6 +13,9 @@ ENV DOLI_ADMIN_LOGIN admin
 ENV DOLI_ADMON_PASSWORD admin
 ENV DOLI_URL_ROOT 'http://localhost'
 
+ENV WWW_USER_ID ''
+ENV WWW_GROUP_ID ''
+
 ENV PHP_INI_DATE_TIMEZONE 'UTC'
 
 RUN apt-get update -q && apt-get upgrade -yq \
@@ -33,9 +36,8 @@ ADD https://github.com/Dolibarr/dolibarr/archive/${DOLI_VERSION}.zip /tmp/doliba
 RUN unzip -q /tmp/dolibarr.zip -d /tmp/dolibarr
 RUN cp -r /tmp/dolibarr/dolibarr-${DOLI_VERSION}/htdocs/* /var/www/html/ && rm -rf /tmp/dolibarr
 
-RUN chown -R www-data:www-data /var/www/
-
 VOLUME /var/www/documents
+VOLUME /var/www/html/conf
 
 EXPOSE 80
 

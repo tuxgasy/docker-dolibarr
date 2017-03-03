@@ -58,3 +58,5 @@ Then run all services `docker-compose up -d`. Now, go to http://0.0.0.0 to acces
 | **DOLI_ADMON_PASSWORD**       | *admin*            | Admin'password
 | **DOLI_URL_ROOT**             | *http://localhost* | Url root of the Dolibarr installation
 | **PHP_INI_DATE_TIMEZONE**     | *UTC*              | Default timezone on PHP
+| **WWW_USER_ID**               |                    | ID of user www-data. ID will not changed if leave empty. During a development, it is very practical to put the same ID as the host user.
+| **WWW_GROUP_ID**              |                    | ID of group www-data. ID will not changed if leave empty.

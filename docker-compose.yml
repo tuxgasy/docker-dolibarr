@@ -22,6 +22,8 @@ web:
         DOLI_DB_PASSWORD: root
         DOLI_DB_NAME: dolibarr
         DOLI_URL_ROOT: 'http://0.0.0.0'
+        WWW_USER_ID: 1000
+        WWW_GROUP_ID: 1000
     ports:
         - "80:80"
     links:

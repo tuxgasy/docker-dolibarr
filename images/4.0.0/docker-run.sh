@@ -67,8 +67,17 @@ if [ $? -ne 0 ]; then
 \$dolibarr_main_db_type='mysqli';
 EOF
 
-	touch /var/www/documents/install.lock
-	chown www-data:www-data /var/www/html/conf/conf.php && chmod 400 /var/www/html/conf/conf.php
+	if [ "$WWW_USER_ID" != "" ]; then
+    usermod -u $WWW_USER_ID www-data
+  fi
+
+  if [ "$WWW_GROUP_ID" != "" ]; then
+    groupmod -g $WWW_GROUP_ID www-data
+  fi
+
+  touch /var/www/documents/install.lock
+  chown -R www-data:www-data /var/www
+	chmod 400 /var/www/html/conf/conf.php
 	chmod 400 /var/www/documents/install.lock
 
 	cat <<EOF > /usr/local/etc/php/php.ini
