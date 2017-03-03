@@ -1,6 +1,6 @@
 #!/bin/bash
 
-versions=( "4.0.0" "4.0.1" "4.0.2" "4.0.3" "4.0.4" )
+versions=( "4.0.0" "4.0.1" "4.0.2" "4.0.3" "4.0.4" "5.0.0" )
 
 for version in ${versions[@]}; do
   echo "Generate Dockerfile for Dolibarr $version"

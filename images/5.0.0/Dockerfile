@@ -2,7 +2,7 @@ FROM php:5.6-apache
 
 MAINTAINER Garcia MICHEL <garcia@soamichel.fr>
 
-ENV DOLI_VERSION 4.0.2
+ENV DOLI_VERSION 5.0.0
 
 ENV DOLI_DB_HOST mysql
 ENV DOLI_DB_USER doli
