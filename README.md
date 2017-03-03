@@ -4,7 +4,7 @@ Docker image for Dolibarr with auto installer on first boot.
 
 ## Supported tags
 
-* `4.0.0`, `4.0.1`, `4.0.2`, `4.0.3`, `4.0.4`, `latest`
+* `4.0.0`, `4.0.1`, `4.0.2`, `4.0.3`, `4.0.4`, `5.0.0`, `latest`
 
 ## What is Dolibarr ?
 
