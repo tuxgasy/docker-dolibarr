@@ -4,6 +4,8 @@ MAINTAINER Garcia MICHEL <garcia@soamichel.fr>
 
 ENV DOLI_VERSION %VERSION%
 
+ENV DOLI_INSTALL_AUTO 1
+
 ENV DOLI_DB_HOST mysql
 ENV DOLI_DB_USER doli
 ENV DOLI_DB_PASSWORD doli_pass
@@ -13,8 +15,8 @@ ENV DOLI_ADMIN_LOGIN admin
 ENV DOLI_ADMON_PASSWORD admin
 ENV DOLI_URL_ROOT 'http://localhost'
 
-ENV WWW_USER_ID ''
-ENV WWW_GROUP_ID ''
+ENV WWW_USER_ID 33
+ENV WWW_GROUP_ID 33
 
 ENV PHP_INI_DATE_TIMEZONE 'UTC'
 
@@ -31,13 +33,15 @@ RUN apt-get update -q && apt-get upgrade -yq \
 
 RUN docker-php-ext-install mysqli
 
+RUN usermod -u $WWW_USER_ID www-data
+RUN groupmod -g $WWW_GROUP_ID www-data
+
 # Get Dolibarr
 ADD https://github.com/Dolibarr/dolibarr/archive/${DOLI_VERSION}.zip /tmp/dolibarr.zip
 RUN unzip -q /tmp/dolibarr.zip -d /tmp/dolibarr
 RUN cp -r /tmp/dolibarr/dolibarr-${DOLI_VERSION}/htdocs/* /var/www/html/ && rm -rf /tmp/dolibarr
 
-VOLUME /var/www/documents
-VOLUME /var/www/html/conf
+RUN chown -R www-data:www-data /var/www
 
 EXPOSE 80
 

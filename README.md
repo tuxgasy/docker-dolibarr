@@ -50,6 +50,7 @@ Then run all services `docker-compose up -d`. Now, go to http://0.0.0.0 to acces
 
 | Variable                      | Default value      | Description |
 | ----------------------------- | ------------------ | ----------- |
+| **DOLI_INSTALL_AUTO**         | *1*                | 1: The installation will be executed on first boot
 | **DOLI_DB_HOST**              | *mysql*            | Host name of the MariaDB/MySQL server
 | **DOLI_DB_USER**              | *doli*             | Database user
 | **DOLI_DB_PASSWORD**          | *doli_pass*        | Database user's password
