@@ -2,6 +2,11 @@
 
 usermod -u $WWW_USER_ID www-data
 groupmod -g $WWW_GROUP_ID www-data
+
+if [ ! -d /var/www/documents ]; then
+  mkdir /var/www/documents
+fi
+
 chown -R www-data:www-data /var/www
 
 if [ ! -f /usr/local/etc/php/php.ini ]; then
