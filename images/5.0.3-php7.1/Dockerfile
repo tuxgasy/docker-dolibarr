@@ -35,7 +35,9 @@ RUN apt-get update -q && apt-get upgrade -yq \
 # Get Dolibarr
 ADD https://github.com/Dolibarr/dolibarr/archive/${DOLI_VERSION}.zip /tmp/dolibarr.zip
 RUN unzip -q /tmp/dolibarr.zip -d /tmp/dolibarr
-RUN cp -r /tmp/dolibarr/dolibarr-${DOLI_VERSION}/htdocs/* /var/www/html/ && rm -rf /tmp/dolibarr
+RUN cp -r /tmp/dolibarr/dolibarr-${DOLI_VERSION}/htdocs/* /var/www/html/ && ln -s /var/www/html /var/www/htdocs
+RUN cp -r /tmp/dolibarr/dolibarr-${DOLI_VERSION}/scripts /var/www/
+RUN rm -rf /tmp/dolibarr
 
 EXPOSE 80
 
