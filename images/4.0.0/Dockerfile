@@ -33,7 +33,7 @@ RUN apt-get update -q && apt-get upgrade -yq \
     exim4 \
 	&& rm -rf /var/lib/apt/lists/* \
 	&& docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
-	&& docker-php-ext-install gd mysqli soap
+	&& docker-php-ext-install gd mysqli soap zip
 
 # Get Dolibarr
 ADD https://github.com/Dolibarr/dolibarr/archive/${DOLI_VERSION}.zip /tmp/dolibarr.zip
@@ -45,7 +45,7 @@ RUN rm -rf /tmp/dolibarr
 # Remove files used by exim4 (it's will be replace on first boot)
 RUN rm -rf /etc/exim4/update-exim4.conf.conf /etc/mailname
 
-EXPOSE 80
+EXPOSE 80 25
 
 COPY docker-run.sh /usr/local/bin/
 ENTRYPOINT ["docker-run.sh"]
