@@ -4,9 +4,9 @@ Docker image for Dolibarr with auto installer on first boot.
 
 ## Supported tags
 
-* `4.0.5`, `5.0.3`, `latest`
-* `4.0.5-php7.0`, `5.0.3-php7.0`
-* `4.0.5-php7.1`, `5.0.3-php7.1`
+* `4.0.5`, `5.0.4`, `latest`
+* `4.0.5-php7.0`, `5.0.4-php7.0`
+* `4.0.5-php7.1`, `5.0.4-php7.1`
 
 ## What is Dolibarr ?
 
