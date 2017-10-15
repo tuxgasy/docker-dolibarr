@@ -2,7 +2,7 @@ FROM php:7.0-apache
 
 MAINTAINER Garcia MICHEL <garcia@soamichel.fr>
 
-ENV DOLI_VERSION 6.0.0
+ENV DOLI_VERSION 6.0.2
 
 ENV DOLI_INSTALL_AUTO 1
 
@@ -20,8 +20,6 @@ ENV WWW_GROUP_ID 33
 
 ENV PHP_INI_DATE_TIMEZONE 'UTC'
 
-ENV MAIL_DOMAIN_NAME 'localhost'
-
 RUN apt-get update -q && apt-get upgrade -yq \
 	&& apt-get install -yq \
 		libpng12-dev \
@@ -30,7 +28,6 @@ RUN apt-get update -q && apt-get upgrade -yq \
     libxml2-dev \
     mysql-client \
 		unzip \
-    exim4 \
 	&& rm -rf /var/lib/apt/lists/* \
 	&& docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
 	&& docker-php-ext-install gd mysqli soap zip
@@ -42,10 +39,7 @@ RUN cp -r /tmp/dolibarr/dolibarr-${DOLI_VERSION}/htdocs/* /var/www/html/ && ln -
 RUN cp -r /tmp/dolibarr/dolibarr-${DOLI_VERSION}/scripts /var/www/
 RUN rm -rf /tmp/dolibarr
 
-# Remove files used by exim4 (it's will be replace on first boot)
-RUN rm -rf /etc/exim4/update-exim4.conf.conf /etc/mailname
-
-EXPOSE 80 25
+EXPOSE 80
 
 COPY docker-run.sh /usr/local/bin/
 ENTRYPOINT ["docker-run.sh"]

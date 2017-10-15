@@ -16,30 +16,6 @@ sendmail_path = /usr/sbin/sendmail -t -i
 EOF
 fi
 
-if [ ! -f /etc/mailname ]; then
-  echo $MAIL_DOMAIN_NAME > /etc/mailname
-fi
-
-if [ ! -f /etc/exim4/update-exim4.conf.conf ]; then
-  cat <<EOF > /etc/exim4/update-exim4.conf.conf
-dc_eximconfig_configtype='internet'
-dc_other_hostnames='${MAIL_DOMAIN_NAME}; localhost.localdomain; localhost'
-dc_local_interfaces='127.0.0.1; ::1'
-dc_readhost=''
-dc_relay_domains=''
-dc_minimaldns='false'
-dc_relay_nets=''
-dc_smarthost=''
-CFILEMODE='644'
-dc_use_split_config='false'
-dc_hide_mailname='true'
-dc_mailname_in_oh='true'
-dc_localdelivery='mail_spool'
-EOF
-
-  service exim4 restart
-fi
-
 if [ ! -f /var/www/html/conf/conf.php ]; then
 	cat <<EOF > /var/www/html/conf/conf.php
 <?php
