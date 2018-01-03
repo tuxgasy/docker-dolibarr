@@ -2,7 +2,7 @@ FROM php:7.0-apache
 
 MAINTAINER Garcia MICHEL <garcia@soamichel.fr>
 
-ENV DOLI_VERSION 6.0.2
+ENV DOLI_VERSION 5.0.7
 
 ENV DOLI_INSTALL_AUTO 1
 
