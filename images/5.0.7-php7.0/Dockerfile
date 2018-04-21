@@ -24,13 +24,12 @@ RUN apt-get update -q && apt-get upgrade -yq \
 	&& apt-get install -yq \
 		libpng12-dev \
 		libjpeg-dev \
-    php5-mysql \
     libxml2-dev \
     mysql-client \
 		unzip \
 	&& rm -rf /var/lib/apt/lists/* \
 	&& docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
-	&& docker-php-ext-install gd mysqli soap zip
+	&& docker-php-ext-install mysqli pdo pdo_mysql gd soap zip
 
 # Get Dolibarr
 ADD https://github.com/Dolibarr/dolibarr/archive/${DOLI_VERSION}.zip /tmp/dolibarr.zip
