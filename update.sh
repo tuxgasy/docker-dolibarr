@@ -1,6 +1,6 @@
 #!/bin/bash
 
-versions=( "5.0.7" "6.0.6" "7.0.1" )
+versions=( "5.0.7" "6.0.7" "7.0.3" "8.0.1" )
 
 rm -rf images/
 
