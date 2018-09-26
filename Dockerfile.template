@@ -1,4 +1,4 @@
-FROM php:%PHP_VERSION%
+FROM php:%PHP_VERSION%-jessie
 
 MAINTAINER Garcia MICHEL <garcia@soamichel.fr>
 
