@@ -1,17 +1,24 @@
 #!/bin/bash
 
-versions=( "5.0.7" "6.0.7" "7.0.3" "8.0.1" )
+set -e
+
+versions=( "5.0.7" "6.0.8" "7.0.4" "8.0.3" )
+tags=""
 
 rm -rf images/
 
 for version in ${versions[@]}; do
   echo "Generate Dockerfile for Dolibarr $version"
 
+  tags="${tags}\* "
+
   for php_version in "5.6" "7.0" "7.1"; do
     if [ "$php_version" = "5.6" ]; then
       dir="images/${version}"
+      tags="${tags}${version} "
     else
       dir="images/${version}-php${php_version}"
+      tags="${tags}${version}-php${php_version} "
     fi
 
     mkdir -p $dir
@@ -24,5 +31,10 @@ for version in ${versions[@]}; do
     cp docker-run.sh $dir/
 
     #docker build -t tuxgasy/dolibarr:$version $dir
+    #docker push tuxgasy/dolibarr:$version
   done
+
+  tags="${tags}\n"
 done
+
+sed 's/%TAGS%/'"${tags}"'/' README.template > README.md
