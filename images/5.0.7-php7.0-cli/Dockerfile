@@ -1,4 +1,4 @@
-FROM php:7.1-apache-stretch
+FROM php:7.0-cli-stretch
 
 MAINTAINER Garcia MICHEL <garcia@soamichel.fr>
 

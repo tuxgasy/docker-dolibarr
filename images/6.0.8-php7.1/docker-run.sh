@@ -94,4 +94,4 @@ if [ $DOLI_INSTALL_AUTO -eq 1 ]; then
   fi
 fi
 
-exec apache2-foreground
+[ -x /usr/local/bin/apache2-foreground ] && exec apache2-foreground

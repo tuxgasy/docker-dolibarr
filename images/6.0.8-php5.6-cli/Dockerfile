@@ -1,4 +1,4 @@
-FROM php:5.6-apache-stretch
+FROM php:5.6-cli-stretch
 
 MAINTAINER Garcia MICHEL <garcia@soamichel.fr>
 
@@ -30,6 +30,8 @@ RUN apt-get update -q && apt-get upgrade -yq \
 	&& rm -rf /var/lib/apt/lists/* \
 	&& docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
 	&& docker-php-ext-install mysqli pdo pdo_mysql gd soap zip
+
+RUN [ ! -d /var/www/html ] && mkdir -p /var/www/html
 
 # Get Dolibarr
 ADD https://github.com/Dolibarr/dolibarr/archive/${DOLI_VERSION}.zip /tmp/dolibarr.zip
