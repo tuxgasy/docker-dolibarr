@@ -2,7 +2,7 @@ FROM php:5.6-apache-stretch
 
 MAINTAINER Garcia MICHEL <garcia@soamichel.fr>
 
-ENV DOLI_VERSION 8.0.3
+ENV DOLI_VERSION 5.0.7
 
 ENV DOLI_INSTALL_AUTO 1
 
@@ -30,8 +30,6 @@ RUN apt-get update -q && apt-get upgrade -yq \
 	&& rm -rf /var/lib/apt/lists/* \
 	&& docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
 	&& docker-php-ext-install mysqli pdo pdo_mysql gd soap zip
-
-RUN [ ! -d /var/www/html ] && mkdir -p /var/www/html
 
 # Get Dolibarr
 ADD https://github.com/Dolibarr/dolibarr/archive/${DOLI_VERSION}.zip /tmp/dolibarr.zip
