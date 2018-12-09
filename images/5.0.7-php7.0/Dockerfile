@@ -1,4 +1,4 @@
-FROM php:7.0-apache-jessie
+FROM php:7.0-apache-stretch
 
 MAINTAINER Garcia MICHEL <garcia@soamichel.fr>
 
@@ -22,7 +22,7 @@ ENV PHP_INI_DATE_TIMEZONE 'UTC'
 
 RUN apt-get update -q && apt-get upgrade -yq \
 	&& apt-get install -yq \
-		libpng12-dev \
+		libpng-dev \
 		libjpeg-dev \
     libxml2-dev \
     mysql-client \
