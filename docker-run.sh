@@ -78,7 +78,7 @@ if [ $DOLI_INSTALL_AUTO -eq 1 ]; then
     done
 
     echo "Create SuperAdmin account ..."
-    pass_crypted=`echo -n $DOLI_ADMON_PASSWORD | md5sum | awk '{print $1}'`
+    pass_crypted=`echo -n $DOLI_ADMIN_PASSWORD | md5sum | awk '{print $1}'`
     mysql -u $DOLI_DB_USER -p${DOLI_DB_PASSWORD} -h $DOLI_DB_HOST $DOLI_DB_NAME -e "INSERT INTO llx_user (entity, login, pass_crypted, lastname, admin, statut) VALUES (0, '${DOLI_ADMIN_LOGIN}', '${pass_crypted}', 'SuperAdmin', 1, 1);" > /dev/null 2>&1
 
     echo "Set some default const ..."
