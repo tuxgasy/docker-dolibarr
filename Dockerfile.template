@@ -14,6 +14,7 @@ ENV DOLI_DB_NAME dolidb
 ENV DOLI_ADMIN_LOGIN admin
 ENV DOLI_ADMIN_PASSWORD admin
 ENV DOLI_URL_ROOT 'http://localhost'
+ENV DOLI_NOCSRFCHECK 0
 
 ENV WWW_USER_ID 33
 ENV WWW_GROUP_ID 33
@@ -24,12 +25,15 @@ RUN apt-get update -q && apt-get upgrade -yq \
 	&& apt-get install -yq \
 		libpng-dev \
 		libjpeg-dev \
+        libldap2-dev \
     libxml2-dev \
     mysql-client \
 		unzip \
 	&& rm -rf /var/lib/apt/lists/* \
 	&& docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
-	&& docker-php-ext-install mysqli pdo pdo_mysql gd soap zip
+	&& docker-php-ext-install mysqli pdo pdo_mysql gd soap zip \
+    && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
+    && docker-php-ext-install ldap
 
 # Get Dolibarr
 ADD https://github.com/Dolibarr/dolibarr/archive/${DOLI_VERSION}.zip /tmp/dolibarr.zip
