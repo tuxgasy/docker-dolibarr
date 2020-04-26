@@ -2,7 +2,7 @@ FROM php:5.6-apache-stretch
 
 MAINTAINER Garcia MICHEL <garcia@soamichel.fr>
 
-ENV DOLI_VERSION 5.0.7
+ENV DOLI_VERSION 11.0.3
 
 ENV DOLI_INSTALL_AUTO 1
 
