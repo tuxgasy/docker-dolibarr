@@ -22,16 +22,16 @@ ENV WWW_GROUP_ID 33
 ENV PHP_INI_DATE_TIMEZONE 'UTC'
 
 RUN apt-get update -q && apt-get upgrade -yq \
-	&& apt-get install -yq \
-		libpng-dev \
-		libjpeg-dev \
+    && apt-get install -yq \
+        libpng-dev \
+        libjpeg-dev \
         libldap2-dev \
-    libxml2-dev \
-    mysql-client \
-		unzip \
-	&& rm -rf /var/lib/apt/lists/* \
-	&& docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
-	&& docker-php-ext-install mysqli pdo pdo_mysql gd soap zip \
+        libxml2-dev \
+        mysql-client \
+        unzip \
+    && rm -rf /var/lib/apt/lists/* \
+    && docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
+    && docker-php-ext-install calendar mysqli pdo pdo_mysql gd soap zip \
     && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
     && docker-php-ext-install ldap
 
