@@ -9,8 +9,8 @@ fi
 
 chown -R www-data:www-data /var/www
 
-if [ ! -f ${PHP_INI_DIR}/php.ini ]; then
-  cat <<EOF > ${PHP_INI_DIR}/php.ini
+if [ ! -f ${PHP_INI_DIR}/conf.d/dolibarr-php.ini ]; then
+  cat <<EOF > ${PHP_INI_DIR}/conf.d/dolibarr-php.ini
 date.timezone = ${PHP_INI_DATE_TIMEZONE}
 sendmail_path = /usr/sbin/sendmail -t -i
 EOF

@@ -2,7 +2,6 @@ FROM php:7.1-apache-stretch
 
 MAINTAINER Garcia MICHEL <garcia@soamichel.fr>
 
-ARG DOLI_VERSION
 ENV DOLI_INSTALL_AUTO 1
 
 ENV DOLI_DB_HOST mysql
@@ -36,7 +35,7 @@ RUN apt-get update -y \
     && docker-php-ext-install -j$(nproc) ldap && \
     mv ${PHP_INI_DIR}/php.ini-production ${PHP_INI_DIR}/php.ini
 
-ENV DOLI_VERSION=${DOLI_VERSION}
+ARG DOLI_VERSION
 
 # Get Dolibarr
 ADD https://github.com/Dolibarr/dolibarr/archive/${DOLI_VERSION}.zip /tmp/dolibarr.zip
@@ -46,6 +45,8 @@ RUN unzip -q /tmp/dolibarr.zip -d /tmp/dolibarr && \
     cp -r /tmp/dolibarr/dolibarr-${DOLI_VERSION}/scripts /var/www/ && \
     rm -rf /tmp/dolibarr && \
     mkdir -p /var/www/documents
+
+ENV DOLI_VERSION=${DOLI_VERSION}
 
 EXPOSE 80
 VOLUME /var/www/documents
