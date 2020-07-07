@@ -10,7 +10,7 @@ rm -rf images/
 for version in ${versions[@]}; do
   echo "Generate Dockerfile for Dolibarr ${version}"
 
-  tags="${tags}\* "
+  tags="${tags}\n\* "
 
   # Mapping version according https://wiki.dolibarr.org/index.php/Versions
   # Regarding PHP Supported version : https://www.php.net/supported-versions.php
@@ -39,21 +39,26 @@ for version in ${versions[@]}; do
 
     mkdir -p $dir
 
-    cp Dockerfile_${php_version}.template ${dir}/Dockerfile
+    if [ -f Dockerfile_${php_version}.template ]; then
+      sed 's/%PHP_VERSION%/'"${php_version}"'/;' Dockerfile_${php_version}.template > ${dir}/Dockerfile
+    else
+      sed 's/%PHP_VERSION%/'"${php_version}"'/;' Dockerfile.template > ${dir}/Dockerfile
+    fi
+
     cp docker-run.sh ${dir}/docker-run.sh
 
-    docker build --compress --tag tuxgasy/dolibarr:${currentTag} --build-arg DOLI_VERSION=${version} ${dir}
+    #docker build --compress --tag tuxgasy/dolibarr:${currentTag} --build-arg DOLI_VERSION=${version} ${dir}
     #docker push tuxgasy/dolibarr:${currentTag}
   done
 
-  docker tag tuxgasy/dolibarr:${currentTag} tuxgasy/dolibarr:${version}
+  #docker tag tuxgasy/dolibarr:${currentTag} tuxgasy/dolibarr:${version}
   #docker push tuxgasy/dolibarr:${version}
 
-  tags="${tags}${version}\n"
+  tags="${tags}${version}"
 done
 
-docker tag tuxgasy/dolibarr:${version} tuxgasy/dolibarr:lastest
-#docker push tuxgasy/dolibarr:lastest
-tags="${tags} lastest"
+#docker tag tuxgasy/dolibarr:${version} tuxgasy/dolibarr:latest
+#docker push tuxgasy/dolibarr:latest
+tags="${tags} latest"
 
 sed 's/%TAGS%/'"${tags}"'/' README.template > README.md

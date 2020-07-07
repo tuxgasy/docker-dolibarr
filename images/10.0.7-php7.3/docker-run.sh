@@ -1,7 +1,7 @@
 #!/bin/bash
 
-usermod -u $WWW_USER_ID www-data
-groupmod -g $WWW_GROUP_ID www-data
+usermod -u ${WWW_USER_ID} www-data
+groupmod -g ${WWW_GROUP_ID} www-data
 
 if [ ! -d /var/www/documents ]; then
   mkdir /var/www/documents
@@ -9,9 +9,9 @@ fi
 
 chown -R www-data:www-data /var/www
 
-if [ ! -f /usr/local/etc/php/php.ini ]; then
-  cat <<EOF > /usr/local/etc/php/php.ini
-date.timezone = $PHP_INI_DATE_TIMEZONE
+if [ ! -f ${PHP_INI_DIR}/php.ini ]; then
+  cat <<EOF > ${PHP_INI_DIR}/php.ini
+date.timezone = ${PHP_INI_DATE_TIMEZONE}
 sendmail_path = /usr/sbin/sendmail -t -i
 EOF
 fi
@@ -37,10 +37,10 @@ EOF
 	chmod 400 /var/www/html/conf/conf.php
 fi
 
-if [ $DOLI_INSTALL_AUTO -eq 1 ]; then
+if [ ${DOLI_INSTALL_AUTO} -eq 1 ]; then
   r=1
   while [ $r -ne 0 ]; do
-    mysql -u $DOLI_DB_USER --protocol tcp -p${DOLI_DB_PASSWORD} -h $DOLI_DB_HOST -e "status" > /dev/null 2>&1
+    mysql -u ${DOLI_DB_USER} --protocol tcp -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} -e "status" > /dev/null 2>&1
     r=$?
     if [ $r -ne 0 ]; then
       echo "Waiting that SQL database is up..."
@@ -48,45 +48,44 @@ if [ $DOLI_INSTALL_AUTO -eq 1 ]; then
     fi
   done
 
-  mysql -u $DOLI_DB_USER -p${DOLI_DB_PASSWORD} -h $DOLI_DB_HOST $DOLI_DB_NAME -e "SELECT * FROM llx_const" > /dev/null 2>&1
+  mysql -u ${DOLI_DB_USER} -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} ${DOLI_DB_NAME} -e "SELECT * FROM llx_const" > /dev/null 2>&1
   if [ $? -ne 0 ]; then
-
-    for f in /var/www/html/install/mysql/tables/*.sql; do
-      if [[ $f != *.key.sql ]]; then
-        echo "Importing table from `basename $f`..."
-        sed -i 's/--.*//g;' $f # remove all comment
-        mysql -u $DOLI_DB_USER -p${DOLI_DB_PASSWORD} -h $DOLI_DB_HOST $DOLI_DB_NAME < $f
+    for fileSQL in /var/www/html/install/mysql/tables/*.sql; do
+      if [[ ${fileSQL} != *.key.sql ]]; then
+        echo "Importing table from `basename ${fileSQL}`..."
+        sed -i 's/--.*//g;' ${fileSQL} # remove all comment
+        mysql -u ${DOLI_DB_USER} -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} ${DOLI_DB_NAME} < ${fileSQL}
       fi
     done
 
-    for f in /var/www/html/install/mysql/tables/*.key.sql; do
-      echo "Importing table key from `basename $f`..."
-      sed -i 's/--.*//g;' $f
-      mysql -u $DOLI_DB_USER -p${DOLI_DB_PASSWORD} -h $DOLI_DB_HOST $DOLI_DB_NAME < $f > /dev/null 2>&1
+    for fileSQL in /var/www/html/install/mysql/tables/*.key.sql; do
+      echo "Importing table key from `basename ${fileSQL}`..."
+      sed -i 's/--.*//g;' ${fileSQL}
+      mysql -u ${DOLI_DB_USER} -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} ${DOLI_DB_NAME} < ${fileSQL} > /dev/null 2>&1
     done
 
-    for f in /var/www/html/install/mysql/functions/*.sql; do
-      echo "Importing `basename $f`..."
-      sed -i 's/--.*//g;' $f
-      mysql -u $DOLI_DB_USER -p${DOLI_DB_PASSWORD} -h $DOLI_DB_HOST $DOLI_DB_NAME < $f > /dev/null 2>&1
+    for fileSQL in /var/www/html/install/mysql/functions/*.sql; do
+      echo "Importing `basename ${fileSQL}`..."
+      sed -i 's/--.*//g;' ${fileSQL}
+      mysql -u ${DOLI_DB_USER} -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} ${DOLI_DB_NAME} < ${fileSQL} > /dev/null 2>&1
     done
 
-    for f in /var/www/html/install/mysql/data/*.sql; do
-      echo "Importing data from `basename $f`..."
-      sed -i 's/--.*//g;' $f
-      mysql -u $DOLI_DB_USER -p${DOLI_DB_PASSWORD} -h $DOLI_DB_HOST $DOLI_DB_NAME < $f > /dev/null 2>&1
+    for fileSQL in /var/www/html/install/mysql/data/*.sql; do
+      echo "Importing data from `basename ${fileSQL}`..."
+      sed -i 's/--.*//g;' ${fileSQL}
+      mysql -u ${DOLI_DB_USER} -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} ${DOLI_DB_NAME} < ${fileSQL} > /dev/null 2>&1
     done
 
     echo "Create SuperAdmin account ..."
-    pass_crypted=`echo -n $DOLI_ADMIN_PASSWORD | md5sum | awk '{print $1}'`
-    mysql -u $DOLI_DB_USER -p${DOLI_DB_PASSWORD} -h $DOLI_DB_HOST $DOLI_DB_NAME -e "INSERT INTO llx_user (entity, login, pass_crypted, lastname, admin, statut) VALUES (0, '${DOLI_ADMIN_LOGIN}', '${pass_crypted}', 'SuperAdmin', 1, 1);" > /dev/null 2>&1
+    pass_crypted=`echo -n ${DOLI_ADMIN_PASSWORD} | md5sum | awk '{print $1}'`
+    mysql -u ${DOLI_DB_USER} -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} ${DOLI_DB_NAME} -e "INSERT INTO llx_user (entity, login, pass_crypted, lastname, admin, statut) VALUES (0, '${DOLI_ADMIN_LOGIN}', '${pass_crypted}', 'SuperAdmin', 1, 1);" > /dev/null 2>&1
 
     echo "Set some default const ..."
-    mysql -u $DOLI_DB_USER -p${DOLI_DB_PASSWORD} -h $DOLI_DB_HOST $DOLI_DB_NAME -e "DELETE FROM llx_const WHERE name='MAIN_VERSION_LAST_INSTALL';" > /dev/null 2>&1
-    mysql -u $DOLI_DB_USER -p${DOLI_DB_PASSWORD} -h $DOLI_DB_HOST $DOLI_DB_NAME -e "DELETE FROM llx_const WHERE name='MAIN_NOT_INSTALLED';" > /dev/null 2>&1
-    mysql -u $DOLI_DB_USER -p${DOLI_DB_PASSWORD} -h $DOLI_DB_HOST $DOLI_DB_NAME -e "DELETE FROM llx_const WHERE name='MAIN_LANG_DEFAULT';" > /dev/null 2>&1
-    mysql -u $DOLI_DB_USER -p${DOLI_DB_PASSWORD} -h $DOLI_DB_HOST $DOLI_DB_NAME -e "INSERT INTO llx_const(name,value,type,visible,note,entity) values('MAIN_VERSION_LAST_INSTALL', '${DOLI_VERSION}', 'chaine', 0, 'Dolibarr version when install', 0);" > /dev/null 2>&1
-    mysql -u $DOLI_DB_USER -p${DOLI_DB_PASSWORD} -h $DOLI_DB_HOST $DOLI_DB_NAME -e "INSERT INTO llx_const(name,value,type,visible,note,entity) VALUES ('MAIN_LANG_DEFAULT', 'auto', 'chaine', 0, 'Default language', 1);" > /dev/null 2>&1
+    mysql -u ${DOLI_DB_USER} -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} ${DOLI_DB_NAME} -e "DELETE FROM llx_const WHERE name='MAIN_VERSION_LAST_INSTALL';" > /dev/null 2>&1
+    mysql -u ${DOLI_DB_USER} -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} ${DOLI_DB_NAME} -e "DELETE FROM llx_const WHERE name='MAIN_NOT_INSTALLED';" > /dev/null 2>&1
+    mysql -u ${DOLI_DB_USER} -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} ${DOLI_DB_NAME} -e "DELETE FROM llx_const WHERE name='MAIN_LANG_DEFAULT';" > /dev/null 2>&1
+    mysql -u ${DOLI_DB_USER} -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} ${DOLI_DB_NAME} -e "INSERT INTO llx_const(name,value,type,visible,note,entity) values('MAIN_VERSION_LAST_INSTALL', '${DOLI_VERSION}', 'chaine', 0, 'Dolibarr version when install', 0);" > /dev/null 2>&1
+    mysql -u ${DOLI_DB_USER} -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} ${DOLI_DB_NAME} -e "INSERT INTO llx_const(name,value,type,visible,note,entity) VALUES ('MAIN_LANG_DEFAULT', 'auto', 'chaine', 0, 'Default language', 1);" > /dev/null 2>&1
 
     touch /var/www/documents/install.lock
     chown www-data:www-data /var/www/documents/install.lock

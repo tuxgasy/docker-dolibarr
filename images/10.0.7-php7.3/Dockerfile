@@ -1,15 +1,3 @@
-FROM alpine:latest AS dolibarrapp
-
-ARG DOLI_VERSION
-ADD https://github.com/Dolibarr/dolibarr/archive/${DOLI_VERSION}.zip /tmp/dolibarr.zip
-
-RUN apk add --no-cache unzip
-
-RUN mkdir -p /dolibarr && \
-    unzip -q /tmp/dolibarr.zip -d /tmp/dolibarr && \
-    cp -r /tmp/dolibarr/dolibarr-${DOLI_VERSION}/* /dolibarr/ && \
-    rm -rf /tmp/dolibarr
-
 FROM php:7.3-apache-stretch
 
 MAINTAINER Garcia MICHEL <garcia@soamichel.fr>
@@ -39,20 +27,28 @@ RUN apt-get update -y \
         libldap2-dev \
         libxml2-dev \
         libzip-dev \
+        mysql-client \
+        unzip \
     && rm -rf /var/lib/apt/lists/* \
     && docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
-    && docker-php-ext-install -j$(nproc) calendar mysqli pdo pdo_mysql gd soap zip \
+    && docker-php-ext-install -j$(nproc) calendar intl mysqli pdo_mysql gd soap zip \
     && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
-    && docker-php-ext-install -j$(nproc) ldap
-
-# Get Dolibarr
-
-COPY --from=dolibarrapp /dolibarr/htdocs /var/www/html/
-COPY --from=dolibarrapp /dolibarr/scripts /var/www/
-RUN ln -s /var/www/html /var/www/htdocs
+    && docker-php-ext-install -j$(nproc) ldap && \
+    mv ${PHP_INI_DIR}/php.ini-production ${PHP_INI_DIR}/php.ini
 
 ENV DOLI_VERSION=${DOLI_VERSION}
+
+# Get Dolibarr
+ADD https://github.com/Dolibarr/dolibarr/archive/${DOLI_VERSION}.zip /tmp/dolibarr.zip
+RUN unzip -q /tmp/dolibarr.zip -d /tmp/dolibarr && \
+    cp -r /tmp/dolibarr/dolibarr-${DOLI_VERSION}/htdocs/* /var/www/html/ && \
+    ln -s /var/www/html /var/www/htdocs && \
+    cp -r /tmp/dolibarr/dolibarr-${DOLI_VERSION}/scripts /var/www/ && \
+    rm -rf /tmp/dolibarr && \
+    mkdir -p /var/www/documents
+
 EXPOSE 80
+VOLUME /var/www/documents
 
 COPY docker-run.sh /usr/local/bin/
 ENTRYPOINT ["docker-run.sh"]
