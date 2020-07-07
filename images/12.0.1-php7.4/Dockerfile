@@ -10,7 +10,7 @@ RUN mkdir -p /dolibarr && \
     cp -r /tmp/dolibarr/dolibarr-${DOLI_VERSION}/* /dolibarr/ && \
     rm -rf /tmp/dolibarr
 
-FROM php:7.1-apache-stretch
+FROM php:7.4-apache
 
 MAINTAINER Garcia MICHEL <garcia@soamichel.fr>
 
@@ -34,13 +34,14 @@ ENV PHP_INI_DATE_TIMEZONE 'UTC'
 
 RUN apt-get update -y \
     && apt-get install -y --no-install-recommends \
+        libfreetype6-dev \
+        libjpeg62-turbo-dev \
         libpng-dev \
-        libjpeg-dev \
         libldap2-dev \
         libxml2-dev \
         libzip-dev \
     && rm -rf /var/lib/apt/lists/* \
-    && docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) calendar mysqli pdo pdo_mysql gd soap zip \
     && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
     && docker-php-ext-install -j$(nproc) ldap

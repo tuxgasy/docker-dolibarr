@@ -10,7 +10,7 @@ RUN mkdir -p /dolibarr && \
     cp -r /tmp/dolibarr/dolibarr-${DOLI_VERSION}/* /dolibarr/ && \
     rm -rf /tmp/dolibarr
 
-FROM php:7.1-apache-stretch
+FROM php:7.2-apache-stretch
 
 MAINTAINER Garcia MICHEL <garcia@soamichel.fr>
 
