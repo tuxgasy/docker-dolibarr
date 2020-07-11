@@ -2,63 +2,92 @@
 
 set -e
 
-versions=( "6.0.8" "7.0.5" "8.0.6" "9.0.4" "10.0.7" "11.0.5" "12.0.1" )
+DOCKER_BUILD=${DOCKER_BUILD:-0}
+DOCKER_PUSH=${DOCKER_PUSH:-0}
+
+BASE_DIR="$( cd "$(dirname "$0")" && pwd )"
+
+source "${BASE_DIR}/versions.sh"
+
 tags=""
 
-rm -rf images/
+rm -rf ${BASE_DIR}/images ${BASE_DIR}/docker-compose-links
 
-for version in ${versions[@]}; do
-  echo "Generate Dockerfile for Dolibarr ${version}"
+for dolibarrVersion in ${DOLIBARR_VERSIONS[@]}; do
+  echo "Generate Dockerfile for Dolibarr ${dolibarrVersion}"
 
   tags="${tags}\n\* "
+  dolibarrMajor=`echo ${dolibarrVersion} | cut -d. -f1`
 
   # Mapping version according https://wiki.dolibarr.org/index.php/Versions
   # Regarding PHP Supported version : https://www.php.net/supported-versions.php
-  if [ "$version" = "6.0.8" ]; then #Version discontinued
-    php_versions=( "7.1" )
-  elif [ "$version" = "7.0.5" ]; then
-    php_versions=( "7.2" )
-  elif [ "$version" = "8.0.6" ]; then
-    php_versions=( "7.2" )
-  elif [ "$version" = "9.0.4" ]; then
-    php_versions=( "7.2" "7.3" )
-  elif [ "$version" = "10.0.7" ]; then
-    php_versions=( "7.2" "7.3" )
-  elif [ "$version" = "11.0.5" ]; then
-    php_versions=( "7.2" "7.3" "7.4" )
-  elif [ "$version" = "12.0.1" ]; then
-    php_versions=( "7.2" "7.3" "7.4" )
+  if [ "${dolibarrMajor}" = "6" ]; then #Version discontinued
+    php_base_images=( "5.6-apache-stretch" "7.1-apache-stretch" )
+  elif [ "${dolibarrMajor}" = "7" ]; then
+    php_base_images=( "5.6-apache-stretch" "7.2-apache-stretch" )
+  elif [ "${dolibarrMajor}" = "8" ]; then
+    php_base_images=( "5.6-apache-stretch" "7.2-apache-stretch" )
+  elif [ "${dolibarrMajor}" = "9" ]; then
+    php_base_images=( "5.6-apache-stretch" "7.3-apache-stretch" )
+  elif [ "${dolibarrMajor}" = "10" ]; then
+    php_base_images=( "5.6-apache-stretch" "7.3-apache-stretch" )
+  elif [ "${dolibarrMajor}" = "11" ]; then
+    php_base_images=( "5.6-apache-stretch" "7.4-apache" )
+  elif [ "${dolibarrMajor}" = "12" ]; then
+    php_base_images=( "5.6-apache-stretch" "7.4-apache" )
   else
-    php_versions=( "7.3" "7.4" )
+    php_base_images=( "7.4-apache" )
   fi
 
-  for php_version in ${php_versions[@]}; do
-    currentTag="${version}-php${php_version}"
-    dir="images/${currentTag}"
+  for php_base_image in ${php_base_images[@]}; do
+
+    php_version=`echo ${php_base_image} | cut -d\- -f1`
+    currentTag="${dolibarrVersion}-php${php_version}"
+    dir=${BASE_DIR}/"images/${currentTag}"
     tags="${tags}${currentTag} "
 
-    mkdir -p $dir
-
-    if [ -f Dockerfile_${php_version}.template ]; then
-      sed 's/%PHP_VERSION%/'"${php_version}"'/;' Dockerfile_${php_version}.template > ${dir}/Dockerfile
+    if [ "${php_version}" = "7.4" ]; then
+      gd_config_args="\-\-with\-freetype\ \-\-with\-jpeg"
     else
-      sed 's/%PHP_VERSION%/'"${php_version}"'/;' Dockerfile.template > ${dir}/Dockerfile
+      gd_config_args="\-\-with\-png\-dir=\/usr\ \-\-with-jpeg-dir=\/usr"
     fi
 
-    cp docker-run.sh ${dir}/docker-run.sh
+    mkdir -p ${dir}
+    cat ${BASE_DIR}/Dockerfile.template | \
+    sed 's/%PHP_BASE_IMAGE%/'"${php_base_image}"'/;'  | \
+    sed 's/%DOLI_VERSION%/'"${dolibarrVersion}"'/;' | \
+    sed 's/%GD_CONFIG_ARG%/'"${gd_config_args}"'/;' \
+    > ${dir}/Dockerfile
 
-    #docker build --compress --tag tuxgasy/dolibarr:${currentTag} --build-arg DOLI_VERSION=${version} ${dir}
-    #docker push tuxgasy/dolibarr:${currentTag}
+    cp ${BASE_DIR}/docker-run.sh ${dir}/docker-run.sh
+
+    if [ ${DOCKER_BUILD} -eq 1 ]; then
+      docker build --compress --tag tuxgasy/dolibarr:${currentTag} ${dir}
+    fi
+    if [ ${DOCKER_PUSH} -eq 1 ]; then
+      docker push tuxgasy/dolibarr:${currentTag}
+    fi
   done
 
-  #docker tag tuxgasy/dolibarr:${currentTag} tuxgasy/dolibarr:${version}
-  #docker push tuxgasy/dolibarr:${version}
+  if [ ${DOCKER_BUILD} -eq 1 ]; then
+    docker tag tuxgasy/dolibarr:${currentTag} tuxgasy/dolibarr:${dolibarrVersion}
+    docker tag tuxgasy/dolibarr:${currentTag} tuxgasy/dolibarr:${dolibarrMajor}
+  fi
+  if [ ${DOCKER_PUSH} -eq 1 ]; then
+    docker push tuxgasy/dolibarr:${dolibarrVersion}
+    docker push tuxgasy/dolibarr:${dolibarrMajor}
+  fi
 
-  tags="${tags}${version}"
+  tags="${tags}${dolibarrVersion} ${dolibarrMajor}"
 done
 
-#docker tag tuxgasy/dolibarr:${version} tuxgasy/dolibarr:latest
-#docker push tuxgasy/dolibarr:latest
+if [ ${DOCKER_BUILD} -eq 1 ]; then
+  docker tag tuxgasy/dolibarr:${dolibarrVersion} tuxgasy/dolibarr:latest
+fi
+if [ ${DOCKER_PUSH} -eq 1 ]; then
+  docker push tuxgasy/dolibarr:latest
+fi
+
 tags="${tags} latest"
 
-sed 's/%TAGS%/'"${tags}"'/' README.template > README.md
+sed 's/%TAGS%/'"${tags}"'/' ${BASE_DIR}/README.template > ${BASE_DIR}/README.md

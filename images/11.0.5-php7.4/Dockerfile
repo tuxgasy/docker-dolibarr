@@ -29,6 +29,7 @@ RUN apt-get update -y \
         libzip-dev \
         default-mysql-client \
         unzip \
+    && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/* \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) calendar intl mysqli pdo_mysql gd soap zip \
@@ -36,7 +37,7 @@ RUN apt-get update -y \
     && docker-php-ext-install -j$(nproc) ldap && \
     mv ${PHP_INI_DIR}/php.ini-production ${PHP_INI_DIR}/php.ini
 
-ARG DOLI_VERSION
+ENV DOLI_VERSION 11.0.5
 
 # Get Dolibarr
 ADD https://github.com/Dolibarr/dolibarr/archive/${DOLI_VERSION}.zip /tmp/dolibarr.zip
@@ -44,10 +45,8 @@ RUN unzip -q /tmp/dolibarr.zip -d /tmp/dolibarr && \
     cp -r /tmp/dolibarr/dolibarr-${DOLI_VERSION}/htdocs/* /var/www/html/ && \
     ln -s /var/www/html /var/www/htdocs && \
     cp -r /tmp/dolibarr/dolibarr-${DOLI_VERSION}/scripts /var/www/ && \
-    rm -rf /tmp/dolibarr && \
+    rm -rf /tmp/* && \
     mkdir -p /var/www/documents
-
-ENV DOLI_VERSION=${DOLI_VERSION}
 
 EXPOSE 80
 VOLUME /var/www/documents
