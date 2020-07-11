@@ -2,7 +2,7 @@
 1. Create only head Dolibarr version for each Major release.
 2. Keep only one Dockerfile.template file, use `sed` value replacement in `update.sh`
 3. Keep most up to date PHP version that matches each [Dolibarr releases](https://wiki.dolibarr.org/index.php/Versions).
-4. Be careful about [supported PHP versions](https://www.php.net/supported-versions.php), try to avoid deprecated PHP Version, but only if it doesn't break rule #3.
+4. Be careful about [supported PHP versions](https://www.php.net/supported-versions.php), try to avoid deprecated PHP version, but only if it doesn't break rule #3.
 5. Run the `update.sh` script
 6. check the `README.md`, to ensure it is well formatted (on some environment `Supported Tags` could be broken) 
 7. Commit all content in `images` directory
