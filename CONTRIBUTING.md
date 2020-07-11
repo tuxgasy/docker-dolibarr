@@ -10,7 +10,7 @@
 
 # How to create images
 All is done through the `update.sh` script, Dolibarr version to build are stored in `versions.sh`
-Ensure that the var `DOLIBARR_VERSIONS` in `versions.sh` is having all version you want to build.
+Ensure that the var `DOLIBARR_VERSIONS` in `versions.sh` is having all versions you want to build.
 Run the script.
 
 ## Tips
