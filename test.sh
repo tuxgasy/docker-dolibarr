@@ -29,13 +29,13 @@ if [ "${PHP_VER}" = "" ]; then
   echo "Building image ..."
   DOLI_VERSION=${DOLI_VER} PHP_VERSION="" docker-compose -f ${BASE_DIR}/docker-compose.yml down 1> /dev/null 2>/dev/null
   DOLI_VERSION=${DOLI_VER} PHP_VERSION="" docker-compose -f ${BASE_DIR}/docker-compose.yml build web
-  DOLI_VERSION=${DOLI_VER} PHP_VERSION="" docker-compose -f ${BASE_DIR}/docker-compose.yml up --force-recreate web
+  DOLI_VERSION=${DOLI_VER} PHP_VERSION="" docker-compose -f ${BASE_DIR}/docker-compose.yml up --force-recreate web adminer
   DOLI_VERSION=${DOLI_VER} PHP_VERSION="" docker-compose -f ${BASE_DIR}/docker-compose.yml down
 else
   echo " - PHP ${PHP_VER}"
   echo "Building image ..."
   DOLI_VERSION=${DOLI_VER} PHP_VERSION="-php${PHP_VER}" docker-compose -f ${BASE_DIR}/docker-compose.yml down 1> /dev/null
   DOLI_VERSION=${DOLI_VER} PHP_VERSION="-php${PHP_VER}" docker-compose -f ${BASE_DIR}/docker-compose.yml build web
-  DOLI_VERSION=${DOLI_VER} PHP_VERSION="-php${PHP_VER}" docker-compose -f ${BASE_DIR}/docker-compose.yml up --force-recreate web
+  DOLI_VERSION=${DOLI_VER} PHP_VERSION="-php${PHP_VER}" docker-compose -f ${BASE_DIR}/docker-compose.yml up --force-recreate web adminer
   DOLI_VERSION=${DOLI_VER} PHP_VERSION="-php${PHP_VER}" docker-compose -f ${BASE_DIR}/docker-compose.yml down
 fi

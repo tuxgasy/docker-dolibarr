@@ -35,3 +35,7 @@ If you want to run Dolibarr 12.0.1 with most up to date PHP version
 ```bash
 $> ./test.sh 12.0.1
 ```
+
+Here are links for running containers :
+* [http://localhost/](http://localhost/) => Dolibarr instance
+* [http://localhost:8080/](http://localhost:8080/) => [Adminer](https://hub.docker.com/_/adminer/) instance for checking DB

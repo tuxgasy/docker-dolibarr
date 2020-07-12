@@ -14,10 +14,11 @@ networks:
     external-pod:
         internal: false
 
-
 services:
     mariadb:
-        image: mariadb:latest
+        image: library/mariadb:latest
+        volumes:
+            - ./.persist/db:/var/lib/mysql:delegated
         environment:
             MYSQL_ROOT_PASSWORD: root
             MYSQL_DATABASE: dolibarr
@@ -28,8 +29,10 @@ services:
         build:
             context: ./docker-compose-links/${DOLI_VERSION}${PHP_VERSION}
         image: tuxgasy/dolibarr:${DOLI_VERSION}${PHP_VERSION}
+        volumes:
+            - ./.persist/documents/6.0.8:/var/www/documents:delegated
         depends_on:
-          - mariadb
+            - mariadb
         environment:
             DOLI_DB_HOST: mariadb
             DOLI_DB_USER: root
@@ -40,6 +43,18 @@ services:
             WWW_GROUP_ID: 1000
         ports:
             - "80:80"
+        networks:
+            - internal-pod
+            - external-pod
+
+    adminer:
+        image: library/adminer:latest
+        depends_on:
+          - mariadb
+        environment:
+            ADMINER_DEFAULT_SERVER: mariadb
+        ports:
+            - 8080:8080
         networks:
             - internal-pod
             - external-pod
