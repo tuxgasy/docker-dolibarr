@@ -9,7 +9,7 @@ version: '3'
 #
 # More informations about Docker-compose : https://docs.docker.com/compose/
 networks:
-    intenal-pod:
+    internal-pod:
         internal: true
     external-pod:
         internal: false
@@ -22,7 +22,7 @@ services:
             MYSQL_ROOT_PASSWORD: root
             MYSQL_DATABASE: dolibarr
         networks:
-            - intenal-pod
+            - internal-pod
 
     web:
         build:
@@ -41,5 +41,5 @@ services:
         ports:
             - "80:80"
         networks:
-            - intenal-pod
+            - internal-pod
             - external-pod
