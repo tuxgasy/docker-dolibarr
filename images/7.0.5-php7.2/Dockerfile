@@ -1,4 +1,4 @@
-FROM php:%PHP_BASE_IMAGE%
+FROM php:7.2-apache-stretch
 
 MAINTAINER Garcia MICHEL <garcia@soamichel.fr>
 
@@ -31,13 +31,13 @@ RUN apt-get update -y \
         unzip \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/* \
-    && docker-php-ext-configure gd %GD_CONFIG_ARG% \
+    && docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
     && docker-php-ext-install -j$(nproc) calendar intl mysqli pdo_mysql gd soap zip \
     && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
     && docker-php-ext-install -j$(nproc) ldap && \
     mv ${PHP_INI_DIR}/php.ini-production ${PHP_INI_DIR}/php.ini
 
-ENV DOLI_VERSION %DOLI_VERSION%
+ENV DOLI_VERSION 7.0.5
 
 # Get Dolibarr
 ADD https://github.com/Dolibarr/dolibarr/archive/${DOLI_VERSION}.zip /tmp/dolibarr.zip

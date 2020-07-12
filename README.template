@@ -23,25 +23,26 @@ Let's use [Docker Compose](https://docs.docker.com/compose/) to integrate it wit
 Create `docker-compose.yml` file as following:
 
 ```
-mariadb:
-    image: mariadb:latest
-    environment:
-        MYSQL_ROOT_PASSWORD: root
-        MYSQL_DATABASE: dolibarr
+services:
+    mariadb:
+        image: mariadb:latest
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: dolibarr
 
-web:
-    image: tuxgasy/dolibarr
-    environment:
-        DOLI_DB_HOST: mariadb
-        DOLI_DB_USER: root
-        DOLI_DB_PASSWORD: root
-        DOLI_DB_NAME: dolibarr
-        DOLI_URL_ROOT: 'http://0.0.0.0'
-        PHP_INI_DATE_TIMEZONE: 'Europe/Paris'
-    ports:
-        - "80:80"
-    links:
-        - mariadb
+    web:
+        image: tuxgasy/dolibarr
+        environment:
+            DOLI_DB_HOST: mariadb
+            DOLI_DB_USER: root
+            DOLI_DB_PASSWORD: root
+            DOLI_DB_NAME: dolibarr
+            DOLI_URL_ROOT: 'http://0.0.0.0'
+            PHP_INI_DATE_TIMEZONE: 'Europe/Paris'
+        ports:
+            - "80:80"
+        links:
+            - mariadb
 ```
 
 Then run all services `docker-compose up -d`. Now, go to http://0.0.0.0 to access to the new Dolibarr installation.

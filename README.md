@@ -4,13 +4,13 @@ Docker image for Dolibarr with auto installer on first boot.
 
 ## Supported tags
 
-* 6.0.8 6.0.8-php7.0 6.0.8-php7.1 
-* 7.0.5 7.0.5-php7.0 7.0.5-php7.1 
-* 8.0.6 8.0.6-php7.0 8.0.6-php7.1 
-* 9.0.4 9.0.4-php7.0 9.0.4-php7.1 
-* 10.0.7 10.0.7-php7.0 10.0.7-php7.1 
-* 11.0.3 11.0.3-php7.0 11.0.3-php7.1 
-
+* 6.0.8-php5.6 6.0.8-php7.1 6.0.8 6
+* 7.0.5-php5.6 7.0.5-php7.2 7.0.5 7
+* 8.0.6-php5.6 8.0.6-php7.2 8.0.6 8
+* 9.0.4-php5.6 9.0.4-php7.3 9.0.4 9
+* 10.0.7-php5.6 10.0.7-php7.3 10.0.7 10
+* 11.0.5-php5.6 11.0.5-php7.4 11.0.5 11
+* 12.0.1-php5.6 12.0.1-php7.4 12.0.1 12 latest
 
 ## What is Dolibarr ?
 
@@ -29,25 +29,26 @@ Let's use [Docker Compose](https://docs.docker.com/compose/) to integrate it wit
 Create `docker-compose.yml` file as following:
 
 ```
-mariadb:
-    image: mariadb:latest
-    environment:
-        MYSQL_ROOT_PASSWORD: root
-        MYSQL_DATABASE: dolibarr
+services:
+    mariadb:
+        image: mariadb:latest
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: dolibarr
 
-web:
-    image: tuxgasy/dolibarr
-    environment:
-        DOLI_DB_HOST: mariadb
-        DOLI_DB_USER: root
-        DOLI_DB_PASSWORD: root
-        DOLI_DB_NAME: dolibarr
-        DOLI_URL_ROOT: 'http://0.0.0.0'
-        PHP_INI_DATE_TIMEZONE: 'Europe/Paris'
-    ports:
-        - "80:80"
-    links:
-        - mariadb
+    web:
+        image: tuxgasy/dolibarr
+        environment:
+            DOLI_DB_HOST: mariadb
+            DOLI_DB_USER: root
+            DOLI_DB_PASSWORD: root
+            DOLI_DB_NAME: dolibarr
+            DOLI_URL_ROOT: 'http://0.0.0.0'
+            PHP_INI_DATE_TIMEZONE: 'Europe/Paris'
+        ports:
+            - "80:80"
+        links:
+            - mariadb
 ```
 
 Then run all services `docker-compose up -d`. Now, go to http://0.0.0.0 to access to the new Dolibarr installation.
