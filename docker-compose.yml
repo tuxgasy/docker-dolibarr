@@ -30,7 +30,7 @@ services:
             context: ./docker-compose-links/${DOLI_VERSION}${PHP_VERSION}
         image: tuxgasy/dolibarr:${DOLI_VERSION}${PHP_VERSION}
         volumes:
-            - ./.persist/documents/6.0.8:/var/www/documents:delegated
+            - ./.persist/documents:/var/www/documents:delegated
         depends_on:
             - mariadb
         environment:
