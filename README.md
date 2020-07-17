@@ -53,6 +53,9 @@ services:
 
 Then run all services `docker-compose up -d`. Now, go to http://0.0.0.0 to access to the new Dolibarr installation.
 
+## Upgrading version and migrating DB
+Remove the `install.lock` file and start an updated version container. Ensure that env `DOLI_INSTALL_AUTO` is set to `1`. It will migrate Database to the new version.
+
 ## Environment variables summary
 
 | Variable                      | Default value      | Description |

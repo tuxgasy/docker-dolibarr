@@ -14,7 +14,6 @@ networks:
     external-pod:
         internal: false
 
-
 services:
     mariadb:
         image: mariadb:latest
@@ -29,7 +28,7 @@ services:
             context: ./docker-compose-links/${DOLI_VERSION}${PHP_VERSION}
         image: tuxgasy/dolibarr:${DOLI_VERSION}${PHP_VERSION}
         depends_on:
-          - mariadb
+            - mariadb
         environment:
             DOLI_DB_HOST: mariadb
             DOLI_DB_USER: root
