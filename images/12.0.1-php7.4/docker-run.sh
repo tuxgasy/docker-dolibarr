@@ -10,25 +10,25 @@ function initDolibarr()
   fi
 
   cat > ${PHP_INI_DIR}/conf.d/dolibarr-php.ini << EOF
-  date.timezone = ${PHP_INI_DATE_TIMEZONE}
-  sendmail_path = /usr/sbin/sendmail -t -i
+date.timezone = ${PHP_INI_DATE_TIMEZONE}
+sendmail_path = /usr/sbin/sendmail -t -i
 EOF
 
   if [ ! -f /var/www/html/conf/conf.php ]; then
     cat > /var/www/html/conf/conf.php << EOF
-    <?php
-    \$dolibarr_main_url_root='${DOLI_URL_ROOT}';
-    \$dolibarr_main_document_root='/var/www/html';
-    \$dolibarr_main_url_root_alt='/custom';
-    \$dolibarr_main_document_root_alt='/var/www/html/custom';
-    \$dolibarr_main_data_root='/var/www/documents';
-    \$dolibarr_main_db_host='${DOLI_DB_HOST}';
-    \$dolibarr_main_db_port='3306';
-    \$dolibarr_main_db_name='${DOLI_DB_NAME}';
-    \$dolibarr_main_db_prefix='llx_';
-    \$dolibarr_main_db_user='${DOLI_DB_USER}';
-    \$dolibarr_main_db_pass='${DOLI_DB_PASSWORD}';
-    \$dolibarr_main_db_type='mysqli';
+<?php
+\$dolibarr_main_url_root='${DOLI_URL_ROOT}';
+\$dolibarr_main_document_root='/var/www/html';
+\$dolibarr_main_url_root_alt='/custom';
+\$dolibarr_main_document_root_alt='/var/www/html/custom';
+\$dolibarr_main_data_root='/var/www/documents';
+\$dolibarr_main_db_host='${DOLI_DB_HOST}';
+\$dolibarr_main_db_port='3306';
+\$dolibarr_main_db_name='${DOLI_DB_NAME}';
+\$dolibarr_main_db_prefix='llx_';
+\$dolibarr_main_db_user='${DOLI_DB_USER}';
+\$dolibarr_main_db_pass='${DOLI_DB_PASSWORD}';
+\$dolibarr_main_db_type='mysqli';
 EOF
   fi
 
