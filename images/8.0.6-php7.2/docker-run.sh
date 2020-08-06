@@ -12,6 +12,7 @@ function initDolibarr()
   cat > ${PHP_INI_DIR}/conf.d/dolibarr-php.ini << EOF
 date.timezone = ${PHP_INI_DATE_TIMEZONE}
 sendmail_path = /usr/sbin/sendmail -t -i
+memory_limit = $PHP_INI_MEMORY_LIMIT
 EOF
 
   if [ ! -f /var/www/html/conf/conf.php ]; then
