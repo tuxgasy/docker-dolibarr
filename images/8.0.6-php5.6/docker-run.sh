@@ -2,20 +2,25 @@
 
 function initDolibarr()
 {
+  local CURRENT_UID=$(id -u www-data)
+  local CURRENT_GID=$(id -g www-data)
   usermod -u ${WWW_USER_ID} www-data
   groupmod -g ${WWW_GROUP_ID} www-data
 
-  if [ ! -d /var/www/documents ]; then
+  if [[ ! -d /var/www/documents ]]; then
+    echo "[INIT] => create volume directory /var/www/documents ..."
     mkdir -p /var/www/documents
   fi
 
+  echo "[INIT] => update PHP Config ..."
   cat > ${PHP_INI_DIR}/conf.d/dolibarr-php.ini << EOF
 date.timezone = ${PHP_INI_DATE_TIMEZONE}
 sendmail_path = /usr/sbin/sendmail -t -i
-memory_limit = $PHP_INI_MEMORY_LIMIT
+memory_limit = ${PHP_INI_MEMORY_LIMIT}
 EOF
 
-  if [ ! -f /var/www/html/conf/conf.php ]; then
+  if [[ ! -f /var/www/html/conf/conf.php ]]; then
+    echo "[INIT] => update Dolibarr Config ..."
     cat > /var/www/html/conf/conf.php << EOF
 <?php
 \$dolibarr_main_url_root='${DOLI_URL_ROOT}';
@@ -33,18 +38,29 @@ EOF
 EOF
   fi
 
-  chown -R www-data:www-data /var/www
+  echo "[INIT] => update ownership for file in Dolibarr Config ..."
+  chown www-data:www-data /var/www/html/conf/conf.php
   chmod 400 /var/www/html/conf/conf.php
+
+  if [[ ${CURRENT_UID} -ne ${WWW_USER_ID} || ${CURRENT_GID} -ne ${WWW_GROUP_ID} ]]; then
+    # Refresh file ownership cause it has changed
+    echo "[INIT] => As UID / GID have changed from default, update ownership for files in /var/ww ..."
+    chown -R www-data:www-data /var/www
+  else
+    # Reducing load on init : change ownership only for volumes declared in docker
+    echo "[INIT] => update ownership for files in /var/www/documents ..."
+    chown -R www-data:www-data /var/www/documents
+  fi
 }
 
 function waitForDataBase()
 {
   r=1
-  while [ $r -ne 0 ]; do
+  while [[ ${r} -ne 0 ]]; do
     mysql -u ${DOLI_DB_USER} --protocol tcp -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} -e "status" > /dev/null 2>&1
     r=$?
-    if [ ${r} -ne 0 ]; then
-      echo "Waiting that SQL database is up..."
+    if [[ ${r} -ne 0 ]]; then
+      echo "Waiting that SQL database is up ..."
       sleep 2
     fi
   done
@@ -61,26 +77,26 @@ function initializeDatabase()
 {
   for fileSQL in /var/www/html/install/mysql/tables/*.sql; do
     if [[ ${fileSQL} != *.key.sql ]]; then
-      echo "Importing table from `basename ${fileSQL}`..."
+      echo "Importing table from `basename ${fileSQL}` ..."
       sed -i 's/--.*//g;' ${fileSQL} # remove all comment
       mysql -u ${DOLI_DB_USER} -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} ${DOLI_DB_NAME} < ${fileSQL}
     fi
   done
 
   for fileSQL in /var/www/html/install/mysql/tables/*.key.sql; do
-    echo "Importing table key from `basename ${fileSQL}`..."
+    echo "Importing table key from `basename ${fileSQL}` ..."
     sed -i 's/--.*//g;' ${fileSQL}
     mysql -u ${DOLI_DB_USER} -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} ${DOLI_DB_NAME} < ${fileSQL} > /dev/null 2>&1
   done
 
   for fileSQL in /var/www/html/install/mysql/functions/*.sql; do
-    echo "Importing `basename ${fileSQL}`..."
+    echo "Importing `basename ${fileSQL}` ..."
     sed -i 's/--.*//g;' ${fileSQL}
     mysql -u ${DOLI_DB_USER} -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} ${DOLI_DB_NAME} < ${fileSQL} > /dev/null 2>&1
   done
 
   for fileSQL in /var/www/html/install/mysql/data/*.sql; do
-    echo "Importing data from `basename ${fileSQL}`..."
+    echo "Importing data from `basename ${fileSQL}` ..."
     sed -i 's/--.*//g;' ${fileSQL}
     mysql -u ${DOLI_DB_USER} -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} ${DOLI_DB_NAME} < ${fileSQL} > /dev/null 2>&1
   done
@@ -105,7 +121,7 @@ function migrateDatabase()
 
   mysqldump -u ${DOLI_DB_USER} -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} ${DOLI_DB_NAME} > /var/www/documents/dump.sql
   r=${?}
-  if [ ${r} -ne 0 ]; then
+  if [[ ${r} -ne 0 ]]; then
     echo "Dump failed ... Aborting migration ..."
     return ${r}
   fi
@@ -119,7 +135,7 @@ function migrateDatabase()
   r=$?
   popd > /dev/null
 
-  if [ ${r} -ne 0 ]; then
+  if [[ ${r} -ne 0 ]]; then
     echo "Migration failed ... Restoring DB ... check file /var/www/documents/migration_error.html for more info on error ..."
     mysql -u ${DOLI_DB_USER} -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} ${DOLI_DB_NAME} < /var/www/documents/dump.sql
     echo "DB Restored ..."
@@ -140,12 +156,12 @@ function run()
   if [[ ${DOLI_INSTALL_AUTO} -eq 1 && ! -f /var/www/documents/install.lock ]]; then
     mysql -u ${DOLI_DB_USER} -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} ${DOLI_DB_NAME} -e "SELECT Q.LAST_INSTALLED_VERSION FROM (SELECT INET_ATON(CONCAT(value, REPEAT('.0', 3 - CHAR_LENGTH(value) + CHAR_LENGTH(REPLACE(value, '.', ''))))) as VERSION_ATON, value as LAST_INSTALLED_VERSION FROM llx_const WHERE name IN ('MAIN_VERSION_LAST_INSTALL', 'MAIN_VERSION_LAST_UPGRADE') and entity=0) Q ORDER BY VERSION_ATON DESC LIMIT 1" > /tmp/lastinstall.result 2>&1
     r=$?
-    if [ ${r} -ne 0 ]; then
+    if [[ ${r} -ne 0 ]]; then
       initializeDatabase
     else
       INSTALLED_VERSION=`grep -v LAST_INSTALLED_VERSION /tmp/lastinstall.result`
       echo "Last installed Version is : ${INSTALLED_VERSION}"
-      if [ "$(echo ${INSTALLED_VERSION} | cut -d. -f1)" -lt "$(echo ${DOLI_VERSION} | cut -d. -f1)" ]; then
+      if [[ "$(echo ${INSTALLED_VERSION} | cut -d. -f1)" -lt "$(echo ${DOLI_VERSION} | cut -d. -f1)" ]]; then
         migrateDatabase
       else
         echo "Schema update is not required ... Enjoy !!"
