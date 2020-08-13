@@ -47,7 +47,8 @@ RUN unzip -q /tmp/dolibarr.zip -d /tmp/dolibarr && \
     ln -s /var/www/html /var/www/htdocs && \
     cp -r /tmp/dolibarr/dolibarr-${DOLI_VERSION}/scripts /var/www/ && \
     rm -rf /tmp/* && \
-    mkdir -p /var/www/documents
+    mkdir -p /var/www/documents && \
+    chown -R www-data:www-data /var/www
 
 EXPOSE 80
 VOLUME /var/www/documents
