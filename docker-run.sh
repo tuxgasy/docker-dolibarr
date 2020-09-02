@@ -126,15 +126,24 @@ function migrateDatabase()
     return ${r}
   fi
   echo "Dump done ... Starting Migration ..."
-
   echo "" > /var/www/documents/migration_error.html
   pushd /var/www/htdocs/install > /dev/null
-  php upgrade.php ${INSTALLED_VERSION} ${TARGET_VERSION} >> /var/www/documents/migration_error.html 2>&1 && \
-  php upgrade2.php ${INSTALLED_VERSION} ${TARGET_VERSION} >> /var/www/documents/migration_error.html 2>&1 && \
-  php step5.php ${INSTALLED_VERSION} ${TARGET_VERSION} >> /var/www/documents/migration_error.html 2>&1
+  OldMajorVersion=(${INSTALLED_VERSION//./ })
+  NewMajorVersion=(${TARGET_VERSION//./ })
+  for i in `seq ${OldMajorVersion[0]} $NewMajorVersion`
+  do
+    if [[ "${OldMajorVersion[0]}" -eq "$i" ]]; then
+      php upgrade.php $INSTALLED_VERSION $((i+1)).0.0 >> /var/www/documents/migration_error.html 2>&1 && \
+      php upgrade2.php $INSTALLED_VERSION $((i+1)).0.0 >> /var/www/documents/migration_error.html 2>&1 && \
+      php step5.php $INSTALLED_VERSION $((i+1)).0.0 >> /var/www/documents/migration_error.html 2>&1
+    elif [[ $((i+1)) != $((NewMajorVersion+1)) ]]; then
+      php upgrade.php ${i}.0.0 $((i+1)).0.0 >> /var/www/documents/migration_error.html 2>&1 && \
+      php upgrade2.php ${i}.0.0 $((i+1)).0.0 >> /var/www/documents/migration_error.html 2>&1 && \
+      php step5.php ${i}.0.0 $((i+1)).0.0 >> /var/www/documents/migration_error.html 2>&1
+    fi
+  done     
   r=$?
   popd > /dev/null
-
   if [[ ${r} -ne 0 ]]; then
     echo "Migration failed ... Restoring DB ... check file /var/www/documents/migration_error.html for more info on error ..."
     mysql -u ${DOLI_DB_USER} -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} ${DOLI_DB_NAME} < /var/www/documents/dump.sql
