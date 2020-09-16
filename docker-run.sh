@@ -137,7 +137,7 @@ function migrateDatabase()
       php upgrade2.php $INSTALLED_VERSION $((i+1)).0.0 >> /var/www/documents/migration_error.html 2>&1 && \
       php step5.php $INSTALLED_VERSION $((i+1)).0.0 >> /var/www/documents/migration_error.html 2>&1
     elif [[ $((i+1)) != $((NewMajorVersion+1)) ]]; then
-      php upgrade.php ${i}.0.0 $((i+1)).0.0 >> /var/www/documents/migration_error.html 2>&1 && \
+      php upgrade.php ${major}.0.0 $((major+1)).0.0 >> /var/www/documents/migration_error.html 2>&1 && \
       php upgrade2.php ${i}.0.0 $((i+1)).0.0 >> /var/www/documents/migration_error.html 2>&1 && \
       php step5.php ${major}.0.0 $((major+1)).0.0 >> /var/www/documents/migration_error.html 2>&1
     fi
