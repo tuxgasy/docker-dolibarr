@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 function initDolibarr()
 {
   local CURRENT_UID=$(id -u www-data)
@@ -172,3 +174,9 @@ function run()
 }
 
 run
+
+if [ "${1#-}" != "$1" ]; then
+  set -- apache2-foreground "$@"
+fi
+
+exec "$@"
