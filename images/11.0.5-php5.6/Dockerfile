@@ -55,3 +55,5 @@ VOLUME /var/www/documents
 
 COPY docker-run.sh /usr/local/bin/
 ENTRYPOINT ["docker-run.sh"]
+
+CMD ["apache2-foreground"]
