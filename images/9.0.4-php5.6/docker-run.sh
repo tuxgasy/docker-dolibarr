@@ -173,4 +173,10 @@ function run()
 
 run
 
-exec apache2-foreground
+set -e
+
+if [ "${1#-}" != "$1" ]; then
+  set -- apache2-foreground "$@"
+fi
+
+exec "$@"
