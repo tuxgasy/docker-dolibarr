@@ -73,14 +73,14 @@ Remove the `install.lock` file and start an updated version container. Ensure th
 | **PHP_INI_MEMORY_LIMIT**      | *256M*                         | PHP Memory limit
 | **WWW_USER_ID**               |                                | ID of user www-data. ID will not changed if leave empty. During a development, it is very practical to put the same ID as the host user.
 | **WWW_GROUP_ID**              |                                | ID of group www-data. ID will not changed if leave empty.
-| **DOLI_AUTH**                 | dolibarr                       | Which method is used to connect users, change to `ldap` or `ldap, dolibarr` to use LDAP
-| **DOLI_LDAP_HOST**            | 127.0.0.1                      | The host of the LDAP server
-| **DOLI_LDAP_PORT**            | 389                            | The port of the LDAP server
-| **DOLI_LDAP_VERSION**         | 3                              | The version of LDAP to use
-| **DOLI_LDAP_SERVER_TYPE**     | openldap                       | The type of LDAP server (openLDAP, Active Directory, eGroupWare)
-| **DOLI_LDAP_LOGIN_ATTRIBUTE** | uid                            | The attribute used to bind users
-| **DOLI_LDAP_DN**              | 'ou=users,dc=my-domain,dc=com' | The base where to look for users
+| **DOLI_AUTH**                 | *dolibarr*                     | Which method is used to connect users, change to `ldap` or `ldap, dolibarr` to use LDAP
+| **DOLI_LDAP_HOST**            | *127.0.0.1*                    | The host of the LDAP server
+| **DOLI_LDAP_PORT**            | *389*                          | The port of the LDAP server
+| **DOLI_LDAP_VERSION**         | *3*                            | The version of LDAP to use
+| **DOLI_LDAP_SERVER_TYPE**     | *openldap*                     | The type of LDAP server (openLDAP, Active Directory, eGroupWare)
+| **DOLI_LDAP_LOGIN_ATTRIBUTE** | *uid*                          | The attribute used to bind users
+| **DOLI_LDAP_DN**              | *ou=users,dc=my-domain,dc=com* | The base where to look for users
 | **DOLI_LDAP_FILTER**          |                                | The filter to authorise users to connect
 | **DOLI_LDAP_BIND_DN**         |                                | The complete DN of the user with read access on users
 | **DOLI_LDAP_BIND_PASS**       |                                | The password of the bind user
-| **DOLI_LDAP_DEBUG**           | false                          | Activate debug mode
+| **DOLI_LDAP_DEBUG**           | *false*                        | Activate debug mode
