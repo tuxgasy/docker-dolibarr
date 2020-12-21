@@ -35,6 +35,17 @@ EOF
 \$dolibarr_main_db_user='${DOLI_DB_USER}';
 \$dolibarr_main_db_pass='${DOLI_DB_PASSWORD}';
 \$dolibarr_main_db_type='mysqli';
+\$dolibarr_main_authentication='${DOLI_AUTH}';
+\$dolibarr_main_auth_ldap_host='${DOLI_LDAP_HOST}';
+\$dolibarr_main_auth_ldap_port='${DOLI_LDAP_PORT}';
+\$dolibarr_main_auth_ldap_version='${DOLI_LDAP_VERSION}';
+\$dolibarr_main_auth_ldap_servertype='${DOLI_LDAP_SERVER_TYPE}';
+\$dolibarr_main_auth_ldap_login_attribute='${DOLI_LDAP_LOGIN_ATTRIBUTE}';
+\$dolibarr_main_auth_ldap_dn='${DOLI_LDAP_DN}';
+\$dolibarr_main_auth_ldap_filter='${DOLI_LDAP_FILTER}';
+\$dolibarr_main_auth_ldap_admin_login='${DOLI_LDAP_BIND_DN}';
+\$dolibarr_main_auth_ldap_admin_pass='${DOLI_LDAP_BIND_PASS}';
+\$dolibarr_main_auth_ldap_debug='${DOLI_LDAP_DEBUG}';
 EOF
   fi
 
@@ -150,10 +161,11 @@ function migrateDatabase()
 function run()
 {
   initDolibarr
-  waitForDataBase
   echo "Current Version is : ${DOLI_VERSION}"
 
   if [[ ${DOLI_INSTALL_AUTO} -eq 1 && ! -f /var/www/documents/install.lock ]]; then
+    waitForDataBase
+
     mysql -u ${DOLI_DB_USER} -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} ${DOLI_DB_NAME} -e "SELECT Q.LAST_INSTALLED_VERSION FROM (SELECT INET_ATON(CONCAT(value, REPEAT('.0', 3 - CHAR_LENGTH(value) + CHAR_LENGTH(REPLACE(value, '.', ''))))) as VERSION_ATON, value as LAST_INSTALLED_VERSION FROM llx_const WHERE name IN ('MAIN_VERSION_LAST_INSTALL', 'MAIN_VERSION_LAST_UPGRADE') and entity=0) Q ORDER BY VERSION_ATON DESC LIMIT 1" > /tmp/lastinstall.result 2>&1
     r=$?
     if [[ ${r} -ne 0 ]]; then
