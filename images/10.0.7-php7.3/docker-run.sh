@@ -168,7 +168,10 @@ function run()
         echo "Schema update is not required ... Enjoy !!"
       fi
     fi
-    lockInstallation
+
+    if [[ ${DOLI_VERSION} != "develop" ]]; then
+      lockInstallation
+    fi
   fi
 }
 

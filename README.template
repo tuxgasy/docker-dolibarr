@@ -3,7 +3,6 @@
 Docker image for Dolibarr with auto installer on first boot.
 
 ## Supported tags
-
 %TAGS%
 
 ## What is Dolibarr ?

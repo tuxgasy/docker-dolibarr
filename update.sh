@@ -10,11 +10,18 @@ BASE_DIR="$( cd "$(dirname "$0")" && pwd )"
 source "${BASE_DIR}/versions.sh"
 
 tags=""
+dolibarrLatestVersion=""
 
 rm -rf ${BASE_DIR}/images ${BASE_DIR}/docker-compose-links
 
 for dolibarrVersion in ${DOLIBARR_VERSIONS[@]}; do
   echo "Generate Dockerfile for Dolibarr ${dolibarrVersion}"
+
+  if [ "${dolibarrVersion}" = "develop" ]; then
+    tags="${tags} latest"
+  else
+    dolibarrLatestVersion=$dolibarrVersion
+  fi
 
   tags="${tags}\n\* "
   dolibarrMajor=`echo ${dolibarrVersion} | cut -d. -f1`
@@ -40,11 +47,16 @@ for dolibarrVersion in ${DOLIBARR_VERSIONS[@]}; do
   fi
 
   for php_base_image in ${php_base_images[@]}; do
-
     php_version=`echo ${php_base_image} | cut -d\- -f1`
-    currentTag="${dolibarrVersion}-php${php_version}"
+
+    if [ "${dolibarrVersion}" = "develop" ]; then
+      currentTag="${dolibarrVersion}"
+    else
+      currentTag="${dolibarrVersion}-php${php_version}"
+      tags="${tags}${currentTag} "
+    fi
+
     dir=${BASE_DIR}/"images/${currentTag}"
-    tags="${tags}${currentTag} "
 
     if [ "${php_version}" = "7.4" ]; then
       gd_config_args="\-\-with\-freetype\ \-\-with\-jpeg"
@@ -78,7 +90,10 @@ for dolibarrVersion in ${DOLIBARR_VERSIONS[@]}; do
     docker push tuxgasy/dolibarr:${dolibarrMajor}
   fi
 
-  tags="${tags}${dolibarrVersion} ${dolibarrMajor}"
+  tags="${tags}${dolibarrVersion}"
+  if [ "${dolibarrVersion}" != "develop" ]; then
+    tags="${tags} ${dolibarrMajor}"
+  fi
 done
 
 if [ ${DOCKER_BUILD} -eq 1 ]; then
@@ -87,7 +102,5 @@ fi
 if [ ${DOCKER_PUSH} -eq 1 ]; then
   docker push tuxgasy/dolibarr:latest
 fi
-
-tags="${tags} latest"
 
 sed 's/%TAGS%/'"${tags}"'/' ${BASE_DIR}/README.template > ${BASE_DIR}/README.md
