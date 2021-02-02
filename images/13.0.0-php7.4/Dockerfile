@@ -1,10 +1,11 @@
-FROM php:5.6-apache-stretch
+FROM php:7.4-apache
 
 MAINTAINER Garcia MICHEL <garcia@soamichel.fr>
 
 ENV DOLI_INSTALL_AUTO 1
 
 ENV DOLI_DB_HOST mysql
+ENV DOLI_DB_HOST_PORT 3306
 ENV DOLI_DB_USER doli
 ENV DOLI_DB_PASSWORD doli_pass
 ENV DOLI_DB_NAME dolidb
@@ -32,13 +33,13 @@ RUN apt-get update -y \
         unzip \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/* \
-    && docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) calendar intl mysqli pdo_mysql gd soap zip \
     && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
     && docker-php-ext-install -j$(nproc) ldap && \
     mv ${PHP_INI_DIR}/php.ini-production ${PHP_INI_DIR}/php.ini
 
-ENV DOLI_VERSION 6.0.8
+ENV DOLI_VERSION 13.0.0
 
 # Get Dolibarr
 ADD https://github.com/Dolibarr/dolibarr/archive/${DOLI_VERSION}.zip /tmp/dolibarr.zip
