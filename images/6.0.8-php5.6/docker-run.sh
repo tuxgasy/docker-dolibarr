@@ -29,7 +29,7 @@ EOF
 \$dolibarr_main_document_root_alt='/var/www/html/custom';
 \$dolibarr_main_data_root='/var/www/documents';
 \$dolibarr_main_db_host='${DOLI_DB_HOST}';
-\$dolibarr_main_db_port='${DOLI_DB_HOST_PORT:-3306}';
+\$dolibarr_main_db_port='${DOLI_DB_HOST_PORT}';
 \$dolibarr_main_db_name='${DOLI_DB_NAME}';
 \$dolibarr_main_db_prefix='llx_';
 \$dolibarr_main_db_user='${DOLI_DB_USER}';
