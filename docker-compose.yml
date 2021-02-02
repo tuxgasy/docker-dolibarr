@@ -20,6 +20,9 @@ services:
         environment:
             MYSQL_ROOT_PASSWORD: root
             MYSQL_DATABASE: dolibarr
+            DOLI_HOST_PORT: 33063
+        ports:
+            - "${DOLI_HOST_PORT}:3306"
         networks:
             - internal-pod
 

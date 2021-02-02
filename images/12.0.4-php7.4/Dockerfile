@@ -5,7 +5,6 @@ MAINTAINER Garcia MICHEL <garcia@soamichel.fr>
 ENV DOLI_INSTALL_AUTO 1
 
 ENV DOLI_DB_HOST mysql
-ENV DOLI_DB_HOST_PORT 3306
 ENV DOLI_DB_USER doli
 ENV DOLI_DB_PASSWORD doli_pass
 ENV DOLI_DB_NAME dolidb
@@ -52,6 +51,7 @@ RUN unzip -q /tmp/dolibarr.zip -d /tmp/dolibarr && \
     chown -R www-data:www-data /var/www
 
 EXPOSE 80
+
 VOLUME /var/www/documents
 
 COPY docker-run.sh /usr/local/bin/
