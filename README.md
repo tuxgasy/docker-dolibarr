@@ -4,14 +4,14 @@ Docker image for Dolibarr with auto installer on first boot.
 
 ## Supported tags
 
-* 7.0.5-php5.6 7.0.5-php7.2  7.0.5 7
-* 8.0.6-php5.6 8.0.6-php7.2  8.0.6 8
-* 9.0.4-php5.6 9.0.4-php7.3  9.0.4 9
-* 10.0.7-php5.6 10.0.7-php7.3  10.0.7 10
-* 11.0.5-php5.6 11.0.5-php7.4  11.0.5 11
-* 12.0.4-php5.6 12.0.4-php7.4  12.0.4 12
-* 13.0.0-php7.4  13.0.0 13 latest
-*  develop
+* 7.0.5-php5.6 7.0.5-php7.2 7.0.5 7
+* 8.0.6-php5.6 8.0.6-php7.2 8.0.6 8
+* 9.0.4-php5.6 9.0.4-php7.3 9.0.4 9
+* 10.0.7-php5.6 10.0.7-php7.3 10.0.7 10
+* 11.0.5-php5.6 11.0.5-php7.4 11.0.5 11
+* 12.0.4-php5.6 12.0.4-php7.4 12.0.4 12
+* 13.0.0-php7.4 13.0.0 13 latest
+* develop
 
 ## What is Dolibarr ?
 
@@ -29,7 +29,9 @@ Let's use [Docker Compose](https://docs.docker.com/compose/) to integrate it wit
 
 Create `docker-compose.yml` file as following:
 
-```
+```yaml
+version: "3"
+
 services:
     mariadb:
         image: mariadb:latest

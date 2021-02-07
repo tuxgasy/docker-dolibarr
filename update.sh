@@ -2,7 +2,7 @@
 
 set -e
 
-DOCKER_BUILD=${DOCKER_BUILD:-1}
+DOCKER_BUILD=${DOCKER_BUILD:-0}
 DOCKER_PUSH=${DOCKER_PUSH:-0}
 
 BASE_DIR="$( cd "$(dirname "$0")" && pwd )"
@@ -16,7 +16,7 @@ rm -rf ${BASE_DIR}/images ${BASE_DIR}/docker-compose-links
 for dolibarrVersion in ${DOLIBARR_VERSIONS[@]}; do
   echo "Generate Dockerfile for Dolibarr ${dolibarrVersion}"
 
-  tags="${tags}\n\* "
+  tags="${tags}\n\*"
   dolibarrMajor=`echo ${dolibarrVersion} | cut -d. -f1`
 
   # Mapping version according https://wiki.dolibarr.org/index.php/Versions
@@ -44,7 +44,7 @@ for dolibarrVersion in ${DOLIBARR_VERSIONS[@]}; do
       currentTag="${dolibarrVersion}"
     else
       currentTag="${dolibarrVersion}-php${php_version}"
-      tags="${tags}${currentTag} "
+      tags="${tags} ${currentTag}"
     fi
 
     dir=${BASE_DIR}/"images/${currentTag}"
