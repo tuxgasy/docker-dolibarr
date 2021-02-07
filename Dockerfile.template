@@ -51,6 +51,8 @@ RUN unzip -q /tmp/dolibarr.zip -d /tmp/dolibarr && \
     mkdir -p /var/www/documents && \
     chown -R www-data:www-data /var/www
 
+rm -rf /var/lib/apt/lists/*
+
 EXPOSE 80
 VOLUME /var/www/documents
 
