@@ -29,7 +29,9 @@ Let's use [Docker Compose](https://docs.docker.com/compose/) to integrate it wit
 
 Create `docker-compose.yml` file as following:
 
-```
+```yaml
+version: "3"
+
 services:
     mariadb:
         image: mariadb:latest

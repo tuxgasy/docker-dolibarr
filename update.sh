@@ -10,20 +10,13 @@ BASE_DIR="$( cd "$(dirname "$0")" && pwd )"
 source "${BASE_DIR}/versions.sh"
 
 tags=""
-dolibarrLatestVersion=""
 
 rm -rf ${BASE_DIR}/images ${BASE_DIR}/docker-compose-links
 
 for dolibarrVersion in ${DOLIBARR_VERSIONS[@]}; do
   echo "Generate Dockerfile for Dolibarr ${dolibarrVersion}"
 
-  if [ "${dolibarrVersion}" = "develop" ]; then
-    tags="${tags} latest"
-  else
-    dolibarrLatestVersion=$dolibarrVersion
-  fi
-
-  tags="${tags}\n\* "
+  tags="${tags}\n\*"
   dolibarrMajor=`echo ${dolibarrVersion} | cut -d. -f1`
 
   # Mapping version according https://wiki.dolibarr.org/index.php/Versions
@@ -51,7 +44,7 @@ for dolibarrVersion in ${DOLIBARR_VERSIONS[@]}; do
       currentTag="${dolibarrVersion}"
     else
       currentTag="${dolibarrVersion}-php${php_version}"
-      tags="${tags}${currentTag} "
+      tags="${tags} ${currentTag}"
     fi
 
     dir=${BASE_DIR}/"images/${currentTag}"
@@ -82,23 +75,26 @@ for dolibarrVersion in ${DOLIBARR_VERSIONS[@]}; do
   if [ ${DOCKER_BUILD} -eq 1 ]; then
     docker tag tuxgasy/dolibarr:${currentTag} tuxgasy/dolibarr:${dolibarrVersion}
     docker tag tuxgasy/dolibarr:${currentTag} tuxgasy/dolibarr:${dolibarrMajor}
+    if [ "${dolibarrVersion}" = ${DOLIBARR_LATEST_TAG} ]; then
+      docker tag tuxgasy/dolibarr:${currentTag} tuxgasy/dolibarr:latest
+    fi
   fi
   if [ ${DOCKER_PUSH} -eq 1 ]; then
     docker push tuxgasy/dolibarr:${dolibarrVersion}
     docker push tuxgasy/dolibarr:${dolibarrMajor}
+    if [ "${dolibarrVersion}" = ${DOLIBARR_LATEST_TAG} ]; then
+      docker push tuxgasy/dolibarr:latest
+    fi
   fi
 
-  tags="${tags}${dolibarrVersion}"
-  if [ "${dolibarrVersion}" != "develop" ]; then
-    tags="${tags} ${dolibarrMajor}"
+  if [ ${dolibarrVersion} = "develop" ]; then
+    tags="${tags} develop"
+  else
+    tags="${tags} ${dolibarrVersion} ${dolibarrMajor}"
+  fi
+  if [ "${dolibarrVersion}" = ${DOLIBARR_LATEST_TAG} ]; then
+    tags="${tags} latest"
   fi
 done
-
-if [ ${DOCKER_BUILD} -eq 1 ]; then
-  docker tag tuxgasy/dolibarr:${dolibarrVersion} tuxgasy/dolibarr:latest
-fi
-if [ ${DOCKER_PUSH} -eq 1 ]; then
-  docker push tuxgasy/dolibarr:latest
-fi
 
 sed 's/%TAGS%/'"${tags}"'/' ${BASE_DIR}/README.template > ${BASE_DIR}/README.md
