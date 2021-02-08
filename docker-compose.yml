@@ -17,7 +17,6 @@ networks:
 services:
     mariadb:
         image: mariadb:latest
-        env_file: .env
         environment:
             MYSQL_ROOT_PASSWORD: root
             MYSQL_DATABASE: dolibarr
