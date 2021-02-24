@@ -1,5 +1,29 @@
 #!/bin/bash
 
+# usage: file_env VAR [DEFAULT]
+#    ie: file_env 'XYZ_DB_PASSWORD' 'example'
+# (will allow for "$XYZ_DB_PASSWORD_FILE" to fill in the value of
+#  "$XYZ_DB_PASSWORD" from a file, especially for Docker's secrets feature)
+# Taken from mariadb docker-entrypoint.sh:
+# https://github.com/docker-library/mariadb/blob/master/docker-entrypoint.sh#L25
+function file_env() {
+  local var="$1"
+  local fileVar="${var}_FILE"
+  local def="${2:-}"
+  if [ "${!var:-}" ] && [ "${!fileVar:-}" ]; then
+    echo "Both $var and $fileVar are set (but are exclusive)" >&2
+    exit 1
+  fi
+  local val="$def"
+  if [ "${!var:-}" ]; then
+    val="${!var}"
+  elif [ "${!fileVar:-}" ]; then
+    val="$(< "${!fileVar}")"
+  fi
+  export "$var"="$val"
+  unset "$fileVar"
+}
+
 function initDolibarr()
 {
   local CURRENT_UID=$(id -u www-data)
@@ -11,6 +35,16 @@ function initDolibarr()
     echo "[INIT] => create volume directory /var/www/documents ..."
     mkdir -p /var/www/documents
   fi
+
+  # Fill password env variables from *_FILE if given, for example:
+  # * if DOLI_SOMETHING_PASSWORD_FILE is set, DOLI_SOMETHING_PASSWORD will take
+  # its value.
+  # * if DOLI_SOMETHING_PASSWORD_FILE and DOLI_SOMETHING_PASSWORD are set, an
+  # error will be thrown.
+  # If none is given, DOLI_SOMETHING_PASSWORD will be set to its default value
+  # ('doli_pass' for DOLI_DB_PASSWORD).
+  file_env 'DOLI_DB_PASSWORD' 'doli_pass'
+  file_env 'DOLI_ADMIN_PASSWORD' 'admin'
 
   echo "[INIT] => update PHP Config ..."
   cat > ${PHP_INI_DIR}/conf.d/dolibarr-php.ini << EOF
