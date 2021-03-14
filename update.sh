@@ -2,7 +2,7 @@
 
 set -e
 
-DOCKER_BUILD=${DOCKER_BUILD:-1}
+DOCKER_BUILD=${DOCKER_BUILD:-0}
 DOCKER_PUSH=${DOCKER_PUSH:-0}
 
 BASE_DIR="$( cd "$(dirname "$0")" && pwd )"
