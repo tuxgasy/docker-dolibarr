@@ -35,7 +35,7 @@ RUN apt-get update -y \
     && docker-php-ext-install -j$(nproc) ldap && \
     mv ${PHP_INI_DIR}/php.ini-production ${PHP_INI_DIR}/php.ini
 
-ENV DOLI_VERSION 13.0.0
+ENV DOLI_VERSION 13.0.1
 
 # Get Dolibarr
 ADD https://github.com/Dolibarr/dolibarr/archive/${DOLI_VERSION}.zip /tmp/dolibarr.zip
