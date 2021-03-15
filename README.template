@@ -9,11 +9,11 @@ Docker image for Dolibarr with auto installer on first boot.
 
 Dolibarr ERP & CRM is a modern software package to manage your organization's activity (contacts, suppliers, invoices, orders, stocks, agenda, ...).
 
-> [More informations](https://github.com/dolibarr/dolibarr)
+> [More information](https://github.com/dolibarr/dolibarr)
 
 ## How to run this image ?
 
-This image is based on the [officiel PHP repository](https://registry.hub.docker.com/_/php/).
+This image is based on the [official PHP repository](https://registry.hub.docker.com/_/php/).
 
 **Important**: This image don't contains database. So you need to link it with a database container.
 
@@ -48,6 +48,13 @@ services:
 
 Then run all services `docker-compose up -d`. Now, go to http://0.0.0.0 to access to the new Dolibarr installation.
 
+### Other examples
+
+You can find several examples in the `examples` directory, such as:
+ - [Running Dolibarr with a mysql server](./examples/with-mysql/dolibarr-with-mysql.md)
+ - [Running Dolibarr with a Traefik reverse proxy](./examples/with-rp-traefik/dolibarr-with-traefik.md)
+ - [Running Dolibarr with secrets](./examples/with-secrets/dolibarr-with-secrets.md)
+
 ## Upgrading version and migrating DB
 Remove the `install.lock` file and start an updated version container. Ensure that env `DOLI_INSTALL_AUTO` is set to `1`. It will migrate Database to the new version.
 
@@ -62,9 +69,16 @@ Remove the `install.lock` file and start an updated version container. Ensure th
 | **DOLI_DB_PASSWORD**          | *doli_pass*        | Database user's password
 | **DOLI_DB_NAME**              | *dolidb*           | Database name
 | **DOLI_ADMIN_LOGIN**          | *admin*            | Admin's login create on the first boot
-| **DOLI_ADMIN_PASSWORD**       | *admin*            | Admin'password
+| **DOLI_ADMIN_PASSWORD**       | *admin*            | Admin's password
 | **DOLI_URL_ROOT**             | *http://localhost* | Url root of the Dolibarr installation
 | **PHP_INI_DATE_TIMEZONE**     | *UTC*              | Default timezone on PHP
 | **PHP_INI_MEMORY_LIMIT**      | *256M*             | PHP Memory limit
 | **WWW_USER_ID**               |                    | ID of user www-data. ID will not changed if leave empty. During a development, it is very practical to put the same ID as the host user.
 | **WWW_GROUP_ID**              |                    | ID of group www-data. ID will not changed if leave empty.
+
+Some environment variables are compatible with docker secrets behaviour, just add the `_FILE` suffix to var name and point the value file to read.
+Environment variables that are compatible with docker secrets:
+ - `DOLI_DB_USER` => `DOLI_DB_USER_FILE`
+ - `DOLI_DB_PASSWORD` => `DOLI_DB_PASSWORD_FILE`
+ - `DOLI_ADMIN_LOGIN` => `DOLI_ADMIN_LOGIN_FILE`
+ - `DOLI_ADMIN_PASSWORD` => `DOLI_ADMIN_PASSWORD_FILE`
