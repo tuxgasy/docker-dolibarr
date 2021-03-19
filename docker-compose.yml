@@ -1,4 +1,3 @@
-version: '3'
 # This docker-compose.yml file is used to build and test quickly
 # a specific version of Dolibarr
 #
@@ -8,18 +7,32 @@ version: '3'
 # $ docker-compose up
 #
 # More informations about Docker-compose : https://docs.docker.com/compose/
+
+version: "3.8"
+
 networks:
     internal-pod:
         internal: true
     external-pod:
         internal: false
 
+secrets:
+    mysql-user:
+        file: ./examples/with-secrets/secrets/mysql_user.secret
+    mysql-password:
+        file: ./examples/with-secrets/secrets/mysql_password.secret
+
 services:
     mariadb:
         image: mariadb:latest
+        secrets:
+            - mysql-user
+            - mysql-password
         environment:
-            MYSQL_ROOT_PASSWORD: root
-            MYSQL_DATABASE: dolibarr
+            MYSQL_RANDOM_ROOT_PASSWORD: "1"
+            MYSQL_DATABASE: "dolibarr"
+            MYSQL_USER_FILE: "/run/secrets/mysql-user"
+            MYSQL_PASSWORD_FILE: "/run/secrets/mysql-password"
         networks:
             - internal-pod
 
@@ -27,12 +40,17 @@ services:
         build:
             context: ./docker-compose-links/${DOLI_VERSION}${PHP_VERSION}
         image: tuxgasy/dolibarr:${DOLI_VERSION}${PHP_VERSION}
+        secrets:
+            - mysql-user
+            - mysql-password
         depends_on:
             - mariadb
         environment:
+            DOLI_DB_USER_FILE: "/run/secrets/mysql-user"
+            DOLI_DB_PASSWORD_FILE: "/run/secrets/mysql-password"
+            DOLI_ADMIN_LOGIN: "administrator"
+            DOLI_ADMIN_PASSWORD: "admin456"
             DOLI_DB_HOST: mariadb
-            DOLI_DB_USER: root
-            DOLI_DB_PASSWORD: root
             DOLI_DB_NAME: dolibarr
             DOLI_URL_ROOT: 'http://0.0.0.0'
             WWW_USER_ID: 1000

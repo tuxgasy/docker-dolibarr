@@ -1,0 +1,41 @@
+version: "3.8"
+
+networks:
+  internal-pod:
+    internal: true
+  external-pod:
+    internal: false
+
+volumes:
+  dolibarr-docs:
+  mysql-data:
+
+services:
+  dolibarr:
+    image: tuxgasy/dolibarr:latest
+    environment:
+      DOLI_DB_HOST: "mysql"
+      DOLI_DB_HOST_PORT: "3306"
+      DOLI_DB_USER: "dolibarr"
+      DOLI_DB_PASSWORD: "mysupersecretpasswordfordatabase"
+      DOLI_DB_NAME: "dolibarr"
+      DOLI_ADMIN_LOGIN: "admin"
+      DOLI_ADMIN_PASSWORD: "mysuperhypersecretpasswordforadminacount"
+    ports:
+      - 80:80
+    volumes:
+      - dolibarr-docs:/var/www/documents
+    networks:
+      - internal-pod
+      - external-pod
+
+  mysql:
+    image: library/mariadb:latest
+    environment:
+      MYSQL_DATABASE: "dolibarr"
+      MYSQL_USER: "dolibarr"
+      MYSQL_PASSWORD: "mysupersecretpasswordfordatabase"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - internal-pod

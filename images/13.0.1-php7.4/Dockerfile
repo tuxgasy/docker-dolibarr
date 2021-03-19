@@ -5,12 +5,9 @@ MAINTAINER Garcia MICHEL <garcia@soamichel.fr>
 ENV DOLI_INSTALL_AUTO 1
 
 ENV DOLI_DB_HOST mysql
-ENV DOLI_DB_USER doli
-ENV DOLI_DB_PASSWORD doli_pass
+ENV DOLI_DB_HOST_PORT 3306
 ENV DOLI_DB_NAME dolidb
 
-ENV DOLI_ADMIN_LOGIN admin
-ENV DOLI_ADMIN_PASSWORD admin
 ENV DOLI_URL_ROOT 'http://localhost'
 ENV DOLI_NOCSRFCHECK 0
 
@@ -50,7 +47,7 @@ RUN apt-get update -y \
     && docker-php-ext-install -j$(nproc) ldap && \
     mv ${PHP_INI_DIR}/php.ini-production ${PHP_INI_DIR}/php.ini
 
-ENV DOLI_VERSION 12.0.3
+ENV DOLI_VERSION 13.0.1
 
 # Get Dolibarr
 ADD https://github.com/Dolibarr/dolibarr/archive/${DOLI_VERSION}.zip /tmp/dolibarr.zip
@@ -61,6 +58,8 @@ RUN unzip -q /tmp/dolibarr.zip -d /tmp/dolibarr && \
     rm -rf /tmp/* && \
     mkdir -p /var/www/documents && \
     chown -R www-data:www-data /var/www
+
+RUN rm -rf /var/lib/apt/lists/*
 
 EXPOSE 80
 VOLUME /var/www/documents

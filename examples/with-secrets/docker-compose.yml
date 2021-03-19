@@ -1,0 +1,59 @@
+version: "3.8"
+
+networks:
+  internal-pod:
+    internal: true
+  external-pod:
+    internal: false
+
+volumes:
+  dolibarr-docs:
+  mysql-data:
+
+secrets:
+  mysql-user:
+    file: ./secrets/mysql_user.secret
+  mysql-password:
+    file: ./secrets/mysql_password.secret
+  dolibarr-admin-user:
+    file: ./secrets/dolibarr_admin_username.secret
+  dolibarr-admin-password:
+    file: ./secrets/dolibarr_admin_password.secret
+
+services:
+  dolibarr:
+    image: tuxgasy/dolibarr:latest
+    secrets:
+      - dolibarr-admin-user
+      - dolibarr-admin-password
+      - mysql-user
+      - mysql-password
+    env_file:
+      - ./env/dolibarr.env
+    environment:
+      DOLI_DB_USER_FILE: "/run/secrets/mysql-user"
+      DOLI_DB_PASSWORD_FILE: "/run/secrets/mysql-password"
+      DOLI_ADMIN_LOGIN_FILE: "/run/secrets/dolibarr-admin-user"
+      DOLI_ADMIN_PASSWORD_FILE: "/run/secrets/dolibarr-admin-password"
+    ports:
+      - 80:80
+    volumes:
+      - dolibarr-docs:/var/www/documents
+    networks:
+      - internal-pod
+      - external-pod
+
+  mysql:
+    image: library/mariadb:latest
+    secrets:
+      - mysql-user
+      - mysql-password
+    env_file:
+      - ./env/mysql.env
+    environment:
+      MYSQL_USER_FILE: "/run/secrets/mysql-user"
+      MYSQL_PASSWORD_FILE: "/run/secrets/mysql-password"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - internal-pod
