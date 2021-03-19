@@ -68,12 +68,11 @@ Remove the `install.lock` file and start an updated version container. Ensure th
 
 ## Environment variables summary
 
-<<<<<<< HEAD
 | Variable                      | Default value                  | Description |
 | ----------------------------- | ------------------------------ | ----------- |
 | **DOLI_INSTALL_AUTO**         | *1*                            | 1: The installation will be executed on first boot
 | **DOLI_DB_HOST**              | *mysql*                        | Host name of the MariaDB/MySQL server
-| **DOLI_DB_HOST_PORT**         | *3306*             | Host port of the MariaDB/MySQL server
+| **DOLI_DB_HOST_PORT**         | *3306*                         | Host port of the MariaDB/MySQL server
 | **DOLI_DB_USER**              | *doli*                         | Database user
 | **DOLI_DB_PASSWORD**          | *doli_pass*                    | Database user's password
 | **DOLI_DB_NAME**              | *dolidb*                       | Database name
