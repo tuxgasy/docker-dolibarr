@@ -44,8 +44,9 @@ sendmail_path = /usr/sbin/sendmail -t -i
 memory_limit = ${PHP_INI_MEMORY_LIMIT}
 EOF
 
-  if [[ ! -f /var/www/html/conf/conf.php ]]; then
+if [[ ! -f /var/www/html/conf/conf.php ]]; then
     echo "[INIT] => update Dolibarr Config ..."
+    auth=${DOLI_AUTH:-dolibarr}
     cat > /var/www/html/conf/conf.php << EOF
 <?php
 \$dolibarr_main_url_root='${DOLI_URL_ROOT}';
@@ -54,13 +55,29 @@ EOF
 \$dolibarr_main_document_root_alt='/var/www/html/custom';
 \$dolibarr_main_data_root='/var/www/documents';
 \$dolibarr_main_db_host='${DOLI_DB_HOST}';
-\$dolibarr_main_db_port='${DOLI_DB_HOST_PORT}';
+\$dolibarr_main_db_port='3306';
 \$dolibarr_main_db_name='${DOLI_DB_NAME}';
 \$dolibarr_main_db_prefix='llx_';
 \$dolibarr_main_db_user='${DOLI_DB_USER}';
 \$dolibarr_main_db_pass='${DOLI_DB_PASSWORD}';
 \$dolibarr_main_db_type='mysqli';
+\$dolibarr_main_authentication='$auth';
 EOF
+    if [[ $auth =~ .*ldap.* ]]; then
+      echo "[INIT] => update Dolibarr Config with LDAP entries ..."
+      cat >> /var/www/html/conf/conf.php << EOF
+\$dolibarr_main_auth_ldap_host='${DOLI_LDAP_HOST:-127.0.0.1}';
+\$dolibarr_main_auth_ldap_port='${DOLI_LDAP_PORT:-389}';
+\$dolibarr_main_auth_ldap_version='${DOLI_LDAP_VERSION:-3}';
+\$dolibarr_main_auth_ldap_servertype='${DOLI_LDAP_SERVER_TYPE:-openldap}';
+\$dolibarr_main_auth_ldap_login_attribute='${DOLI_LDAP_LOGIN_ATTRIBUTE:-uid}';
+\$dolibarr_main_auth_ldap_dn='${DOLI_LDAP_DN:-ou=users,dc=my-domain,dc=com}';
+\$dolibarr_main_auth_ldap_filter='${DOLI_LDAP_FILTER}';
+\$dolibarr_main_auth_ldap_admin_login='${DOLI_LDAP_BIND_DN}';
+\$dolibarr_main_auth_ldap_admin_pass='${DOLI_LDAP_BIND_PASS}';
+\$dolibarr_main_auth_ldap_debug='${DOLI_LDAP_DEBUG:-false}';
+EOF
+    fi
   fi
 
   echo "[INIT] => update ownership for file in Dolibarr Config ..."

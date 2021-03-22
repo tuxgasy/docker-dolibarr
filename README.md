@@ -68,21 +68,32 @@ Remove the `install.lock` file and start an updated version container. Ensure th
 
 ## Environment variables summary
 
-| Variable                      | Default value      | Description |
-| ----------------------------- | ------------------ | ----------- |
-| **DOLI_INSTALL_AUTO**         | *1*                | 1: The installation will be executed on first boot
-| **DOLI_DB_HOST**              | *mysql*            | Host name of the MariaDB/MySQL server
-| **DOLI_DB_HOST_PORT**         | *3306*             | Host port of the MariaDB/MySQL server
-| **DOLI_DB_USER**              | *doli*             | Database user
-| **DOLI_DB_PASSWORD**          | *doli_pass*        | Database user's password
-| **DOLI_DB_NAME**              | *dolidb*           | Database name
-| **DOLI_ADMIN_LOGIN**          | *admin*            | Admin's login create on the first boot
-| **DOLI_ADMIN_PASSWORD**       | *admin*            | Admin's password
-| **DOLI_URL_ROOT**             | *http://localhost* | Url root of the Dolibarr installation
-| **PHP_INI_DATE_TIMEZONE**     | *UTC*              | Default timezone on PHP
-| **PHP_INI_MEMORY_LIMIT**      | *256M*             | PHP Memory limit
-| **WWW_USER_ID**               |                    | ID of user www-data. ID will not changed if leave empty. During a development, it is very practical to put the same ID as the host user.
-| **WWW_GROUP_ID**              |                    | ID of group www-data. ID will not changed if leave empty.
+| Variable                      | Default value                  | Description |
+| ----------------------------- | ------------------------------ | ----------- |
+| **DOLI_INSTALL_AUTO**         | *1*                            | 1: The installation will be executed on first boot
+| **DOLI_DB_HOST**              | *mysql*                        | Host name of the MariaDB/MySQL server
+| **DOLI_DB_HOST_PORT**         | *3306*                         | Host port of the MariaDB/MySQL server
+| **DOLI_DB_USER**              | *doli*                         | Database user
+| **DOLI_DB_PASSWORD**          | *doli_pass*                    | Database user's password
+| **DOLI_DB_NAME**              | *dolidb*                       | Database name
+| **DOLI_ADMIN_LOGIN**          | *admin*                        | Admin's login create on the first boot
+| **DOLI_ADMIN_PASSWORD**       | *admin*                        | Admin'password
+| **DOLI_URL_ROOT**             | *http://localhost*             | Url root of the Dolibarr installation
+| **PHP_INI_DATE_TIMEZONE**     | *UTC*                          | Default timezone on PHP
+| **PHP_INI_MEMORY_LIMIT**      | *256M*                         | PHP Memory limit
+| **WWW_USER_ID**               |                                | ID of user www-data. ID will not changed if leave empty. During a development, it is very practical to put the same ID as the host user.
+| **WWW_GROUP_ID**              |                                | ID of group www-data. ID will not changed if leave empty.
+| **DOLI_AUTH**                 | *dolibarr*                     | Which method is used to connect users, change to `ldap` or `ldap, dolibarr` to use LDAP
+| **DOLI_LDAP_HOST**            | *127.0.0.1*                    | The host of the LDAP server
+| **DOLI_LDAP_PORT**            | *389*                          | The port of the LDAP server
+| **DOLI_LDAP_VERSION**         | *3*                            | The version of LDAP to use
+| **DOLI_LDAP_SERVER_TYPE**     | *openldap*                     | The type of LDAP server (openLDAP, Active Directory, eGroupWare)
+| **DOLI_LDAP_LOGIN_ATTRIBUTE** | *uid*                          | The attribute used to bind users
+| **DOLI_LDAP_DN**              | *ou=users,dc=my-domain,dc=com* | The base where to look for users
+| **DOLI_LDAP_FILTER**          |                                | The filter to authorise users to connect
+| **DOLI_LDAP_BIND_DN**         |                                | The complete DN of the user with read access on users
+| **DOLI_LDAP_BIND_PASS**       |                                | The password of the bind user
+| **DOLI_LDAP_DEBUG**           | *false*                        | Activate debug mode
 
 Some environment variables are compatible with docker secrets behaviour, just add the `_FILE` suffix to var name and point the value file to read.
 Environment variables that are compatible with docker secrets:
