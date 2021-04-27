@@ -22,13 +22,13 @@ for dolibarrVersion in "${DOLIBARR_VERSIONS[@]}"; do
   # Mapping version according https://wiki.dolibarr.org/index.php/Versions
   # Regarding PHP Supported version : https://www.php.net/supported-versions.php
   if [ "${dolibarrMajor}" = "7" ]; then
-    php_base_images=( "5.6-apache-stretch" "7.2-apache-stretch" )
+    php_base_images=( "5.6-apache" "7.2-apache" )
   elif [ "${dolibarrMajor}" = "8" ]; then
-    php_base_images=( "5.6-apache-stretch" "7.2-apache-stretch" )
+    php_base_images=( "5.6-apache" "7.2-apache" )
   elif [ "${dolibarrMajor}" = "9" ]; then
-    php_base_images=( "5.6-apache-stretch" "7.3-apache-stretch" )
+    php_base_images=( "5.6-apache" "7.3-apache" )
   elif [ "${dolibarrMajor}" = "10" ]; then
-    php_base_images=( "5.6-apache-stretch" "7.3-apache-stretch" )
+    php_base_images=( "5.6-apache" "7.3-apache" )
   elif [ "${dolibarrMajor}" = "11" ]; then
     php_base_images=( "5.6-apache-stretch" "7.4-apache" )
   elif [ "${dolibarrMajor}" = "12" ]; then

@@ -1,4 +1,4 @@
-FROM php:7.3-apache-stretch
+FROM php:7.3-apache
 
 MAINTAINER Garcia MICHEL <garcia@soamichel.fr>
 
@@ -30,11 +30,14 @@ ENV PHP_INI_DATE_TIMEZONE 'UTC'
 ENV PHP_INI_MEMORY_LIMIT 256M
 
 RUN apt-get update -y \
+    && apt-get dist-upgrade -y \
     && apt-get install -y --no-install-recommends \
+        libc-client-dev \
         libfreetype6-dev \
         libjpeg62-turbo-dev \
-        libpng-dev \
+        libkrb5-dev \
         libldap2-dev \
+        libpng-dev \
         libxml2-dev \
         libzip-dev \
         default-mysql-client \
@@ -44,8 +47,10 @@ RUN apt-get update -y \
     && docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
     && docker-php-ext-install -j$(nproc) calendar intl mysqli pdo_mysql gd soap zip \
     && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
-    && docker-php-ext-install -j$(nproc) ldap && \
-    mv ${PHP_INI_DIR}/php.ini-production ${PHP_INI_DIR}/php.ini
+    && docker-php-ext-install -j$(nproc) ldap \
+    && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
+    && docker-php-ext-install imap \
+    && mv ${PHP_INI_DIR}/php.ini-production ${PHP_INI_DIR}/php.ini
 
 ENV DOLI_VERSION 9.0.4
 
