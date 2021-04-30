@@ -16,7 +16,8 @@ jobs:
         - docker ps | grep -q dolibarr
 
     - stage: deploy
-      if: branch = master
+      branches:
+        - only: master
       env:
         - DOCKER_BUILD=1 DOCKER_PUSH=1
       before_install:
