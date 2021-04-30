@@ -7,8 +7,6 @@ jobs:
   include:
     - stage: test
       if: type = pull_request
-      env:
-        - DOCKER_BUILD=1 DOLI_INSTALL_AUTO=0
       before_install:
         - ./update.sh
       script:
