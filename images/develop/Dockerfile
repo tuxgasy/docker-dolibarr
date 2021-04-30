@@ -2,7 +2,7 @@ FROM php:7.4-apache-buster
 
 MAINTAINER Garcia MICHEL <garcia@soamichel.fr>
 
-ENV DOLI_INSTALL_AUTO 1
+ENV DOLI_INSTALL_AUTO 0
 
 ENV DOLI_DB_HOST mysql
 ENV DOLI_DB_HOST_PORT 3306
