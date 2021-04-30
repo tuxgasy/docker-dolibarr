@@ -16,11 +16,12 @@ jobs:
         - docker ps | grep -q dolibarr
 
     - stage: deploy
-      branches:
-        - only: master
       env:
         - DOCKER_BUILD=1 DOCKER_PUSH=1
       before_install:
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-      script:
-        - ./update.sh
+      deploy:
+        provider: script
+        script: ./update.sh
+        on:
+          - branch: master
