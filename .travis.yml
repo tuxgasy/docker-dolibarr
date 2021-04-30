@@ -14,3 +14,12 @@ jobs:
         - docker run -d -p 127.0.0.1:80:80 --name dolibarr tuxgasy/dolibarr:develop
       script:
         - docker ps | grep -q dolibarr
+
+    - stage: deploy
+      if: branch = master
+      env:
+        - DOCKER_BUILD=1 DOCKER_PUSH=1
+      before_install:
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+      script:
+        - ./update.sh
