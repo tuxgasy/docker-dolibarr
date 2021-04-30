@@ -15,7 +15,7 @@ jobs:
         - echo "Run the update.sh script before pull request"
 
     - stage: test
-      if: type = push
+      if: type = pull_request
       env:
         - DOCKER_BUILD=1 DOLI_INSTALL_AUTO=0
       before_install:
