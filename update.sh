@@ -22,19 +22,19 @@ for dolibarrVersion in "${DOLIBARR_VERSIONS[@]}"; do
   # Mapping version according https://wiki.dolibarr.org/index.php/Versions
   # Regarding PHP Supported version : https://www.php.net/supported-versions.php
   if [ "${dolibarrMajor}" = "7" ]; then
-    php_base_images=( "5.6-apache-stretch" "7.2-apache-stretch" )
+    php_base_images=( "5.6-apache-stretch" "7.2-apache-buster" )
   elif [ "${dolibarrMajor}" = "8" ]; then
-    php_base_images=( "5.6-apache-stretch" "7.2-apache-stretch" )
+    php_base_images=( "5.6-apache-stretch" "7.2-apache-buster" )
   elif [ "${dolibarrMajor}" = "9" ]; then
-    php_base_images=( "5.6-apache-stretch" "7.3-apache-stretch" )
+    php_base_images=( "5.6-apache-stretch" "7.3-apache-buster" )
   elif [ "${dolibarrMajor}" = "10" ]; then
-    php_base_images=( "5.6-apache-stretch" "7.3-apache-stretch" )
+    php_base_images=( "5.6-apache-stretch" "7.3-apache-buster" )
   elif [ "${dolibarrMajor}" = "11" ]; then
-    php_base_images=( "5.6-apache-stretch" "7.4-apache" )
+    php_base_images=( "5.6-apache-stretch" "7.4-apache-buster" )
   elif [ "${dolibarrMajor}" = "12" ]; then
-    php_base_images=( "5.6-apache-stretch" "7.4-apache" )
+    php_base_images=( "5.6-apache-stretch" "7.4-apache-buster" )
   else
-    php_base_images=( "7.4-apache" )
+    php_base_images=( "7.4-apache-buster" )
   fi
 
   for php_base_image in "${php_base_images[@]}"; do
