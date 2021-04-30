@@ -11,6 +11,8 @@ jobs:
         - ./update.sh
       script:
         - git diff --exit-code
+      after_failure:
+        - echo "Run the update.sh script before pull request"
 
     - stage: test
       if: type = push
