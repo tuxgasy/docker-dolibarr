@@ -1,6 +1,6 @@
 FROM php:5.6-apache-stretch
 
-MAINTAINER Garcia MICHEL <garcia@soamichel.fr>
+LABEL maintainer="Garcia MICHEL <garcia@soamichel.fr>"
 
 ENV DOLI_INSTALL_AUTO 1
 
