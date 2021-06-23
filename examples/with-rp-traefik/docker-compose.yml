@@ -1,0 +1,74 @@
+version: "3.8"
+
+networks:
+  proxy-network:
+    name: proxy-network
+    driver: bridge
+    internal: false
+  backend-with-internet:
+    name: backend-with-internet
+    driver: bridge
+    internal: false
+  backend-isolated:
+    name: backend-isolated
+    internal: true
+
+volumes:
+  dolibarr-docs:
+  mysql-data:
+  traefik-acme:
+
+services:
+  proxy:
+    image: library/traefik:2.3
+    ports:
+      - 80:80
+      - 443:443
+      - 8080:8080
+    volumes:
+      - ./conf/traefik.yml:/etc/traefik/traefik.yml
+      - /var/run/docker.sock:/var/run/docker.sock
+      - traefik-acme:/letsencrypt/acme.json
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.proxy.rule=PathPrefix(`/api`) || PathPrefix(`/dashboard`)"
+      - "traefik.http.routers.proxy.entrypoints=traefik"
+      - "traefik.http.routers.proxy.service=api@internal"
+      - "traefik.http.routers.proxy.tls=true"
+      - "traefik.http.routers.proxy.tls.certresolver=myresolver"
+    networks:
+      - proxy-network
+      - backend-with-internet
+      - backend-isolated
+
+  dolibarr:
+    image: tuxgasy/dolibarr:latest
+    environment:
+      DOLI_DB_HOST: "mysql"
+      DOLI_DB_USER: "dolibarr"
+      DOLI_DB_PASSWORD: "mysupersecretpasswordfordatabase"
+      DOLI_DB_NAME: "dolibarr"
+      DOLI_ADMIN_LOGIN: "admin"
+      DOLI_ADMIN_PASSWORD: "mysuperhypersecretpasswordforadminacount"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dolibarr.tls=true"
+      - "traefik.http.routers.dolibarr.rule=Host(`mydolibarr.domain.tld`)"
+      - "traefik.http.services.dolibarr.loadbalancer.server.port=80"
+      - "traefik.http.services.dolibarr.loadbalancer.server.scheme=http"
+    volumes:
+      - dolibarr-docs:/var/www/documents
+    networks:
+      - backend-with-internet
+      - backend-isolated
+
+  mysql:
+    image: library/mariadb:latest
+    environment:
+      MYSQL_DATABASE: "dolibarr"
+      MYSQL_USER: "dolibarr"
+      MYSQL_PASSWORD: "mysupersecretpasswordfordatabase"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - backend-isolated

@@ -10,18 +10,18 @@ Docker image for Dolibarr with auto installer on first boot.
 * 10.0.7-php5.6 10.0.7-php7.3 10.0.7 10
 * 11.0.5-php5.6 11.0.5-php7.4 11.0.5 11
 * 12.0.4-php5.6 12.0.4-php7.4 12.0.4 12
-* 13.0.0-php7.4 13.0.0 13 latest
+* 13.0.2-php7.4 13.0.2 13 latest
 * develop
 
 ## What is Dolibarr ?
 
 Dolibarr ERP & CRM is a modern software package to manage your organization's activity (contacts, suppliers, invoices, orders, stocks, agenda, ...).
 
-> [More informations](https://github.com/dolibarr/dolibarr)
+> [More information](https://github.com/dolibarr/dolibarr)
 
 ## How to run this image ?
 
-This image is based on the [officiel PHP repository](https://registry.hub.docker.com/_/php/).
+This image is based on the [official PHP repository](https://registry.hub.docker.com/_/php/).
 
 **Important**: This image don't contains database. So you need to link it with a database container.
 
@@ -29,7 +29,9 @@ Let's use [Docker Compose](https://docs.docker.com/compose/) to integrate it wit
 
 Create `docker-compose.yml` file as following:
 
-```
+```yaml
+version: "3"
+
 services:
     mariadb:
         image: mariadb:latest
@@ -54,22 +56,48 @@ services:
 
 Then run all services `docker-compose up -d`. Now, go to http://0.0.0.0 to access to the new Dolibarr installation.
 
+### Other examples
+
+You can find several examples in the `examples` directory, such as:
+ - [Running Dolibarr with a mysql server](./examples/with-mysql/dolibarr-with-mysql.md)
+ - [Running Dolibarr with a Traefik reverse proxy](./examples/with-rp-traefik/dolibarr-with-traefik.md)
+ - [Running Dolibarr with secrets](./examples/with-secrets/dolibarr-with-secrets.md)
+
 ## Upgrading version and migrating DB
 Remove the `install.lock` file and start an updated version container. Ensure that env `DOLI_INSTALL_AUTO` is set to `1`. It will migrate Database to the new version.
 
 ## Environment variables summary
 
-| Variable                      | Default value      | Description |
-| ----------------------------- | ------------------ | ----------- |
-| **DOLI_INSTALL_AUTO**         | *1*                | 1: The installation will be executed on first boot
-| **DOLI_DB_HOST**              | *mysql*            | Host name of the MariaDB/MySQL server
-| **DOLI_DB_USER**              | *doli*             | Database user
-| **DOLI_DB_PASSWORD**          | *doli_pass*        | Database user's password
-| **DOLI_DB_NAME**              | *dolidb*           | Database name
-| **DOLI_ADMIN_LOGIN**          | *admin*            | Admin's login create on the first boot
-| **DOLI_ADMIN_PASSWORD**       | *admin*            | Admin'password
-| **DOLI_URL_ROOT**             | *http://localhost* | Url root of the Dolibarr installation
-| **PHP_INI_DATE_TIMEZONE**     | *UTC*              | Default timezone on PHP
-| **PHP_INI_MEMORY_LIMIT**      | *256M*             | PHP Memory limit
-| **WWW_USER_ID**               |                    | ID of user www-data. ID will not changed if leave empty. During a development, it is very practical to put the same ID as the host user.
-| **WWW_GROUP_ID**              |                    | ID of group www-data. ID will not changed if leave empty.
+| Variable                      | Default value                  | Description |
+| ----------------------------- | ------------------------------ | ----------- |
+| **DOLI_INSTALL_AUTO**         | *1*                            | 1: The installation will be executed on first boot
+| **DOLI_DB_HOST**              | *mysql*                        | Host name of the MariaDB/MySQL server
+| **DOLI_DB_HOST_PORT**         | *3306*                         | Host port of the MariaDB/MySQL server
+| **DOLI_DB_USER**              | *doli*                         | Database user
+| **DOLI_DB_PASSWORD**          | *doli_pass*                    | Database user's password
+| **DOLI_DB_NAME**              | *dolidb*                       | Database name
+| **DOLI_ADMIN_LOGIN**          | *admin*                        | Admin's login create on the first boot
+| **DOLI_ADMIN_PASSWORD**       | *admin*                        | Admin'password
+| **DOLI_URL_ROOT**             | *http://localhost*             | Url root of the Dolibarr installation
+| **PHP_INI_DATE_TIMEZONE**     | *UTC*                          | Default timezone on PHP
+| **PHP_INI_MEMORY_LIMIT**      | *256M*                         | PHP Memory limit
+| **WWW_USER_ID**               |                                | ID of user www-data. ID will not changed if leave empty. During a development, it is very practical to put the same ID as the host user.
+| **WWW_GROUP_ID**              |                                | ID of group www-data. ID will not changed if leave empty.
+| **DOLI_AUTH**                 | *dolibarr*                     | Which method is used to connect users, change to `ldap` or `ldap, dolibarr` to use LDAP
+| **DOLI_LDAP_HOST**            | *127.0.0.1*                    | The host of the LDAP server
+| **DOLI_LDAP_PORT**            | *389*                          | The port of the LDAP server
+| **DOLI_LDAP_VERSION**         | *3*                            | The version of LDAP to use
+| **DOLI_LDAP_SERVER_TYPE**     | *openldap*                     | The type of LDAP server (openLDAP, Active Directory, eGroupWare)
+| **DOLI_LDAP_LOGIN_ATTRIBUTE** | *uid*                          | The attribute used to bind users
+| **DOLI_LDAP_DN**              | *ou=users,dc=my-domain,dc=com* | The base where to look for users
+| **DOLI_LDAP_FILTER**          |                                | The filter to authorise users to connect
+| **DOLI_LDAP_BIND_DN**         |                                | The complete DN of the user with read access on users
+| **DOLI_LDAP_BIND_PASS**       |                                | The password of the bind user
+| **DOLI_LDAP_DEBUG**           | *false*                        | Activate debug mode
+
+Some environment variables are compatible with docker secrets behaviour, just add the `_FILE` suffix to var name and point the value file to read.
+Environment variables that are compatible with docker secrets:
+ - `DOLI_DB_USER` => `DOLI_DB_USER_FILE`
+ - `DOLI_DB_PASSWORD` => `DOLI_DB_PASSWORD_FILE`
+ - `DOLI_ADMIN_LOGIN` => `DOLI_ADMIN_LOGIN_FILE`
+ - `DOLI_ADMIN_PASSWORD` => `DOLI_ADMIN_PASSWORD_FILE`
