@@ -42,6 +42,7 @@ RUN apt-get update -y \
         libzip-dev \
         default-mysql-client \
         unzip \
+        libreoffice-writer \
     && apt-get autoremove -y \
     && docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
     && docker-php-ext-install -j$(nproc) calendar intl mysqli pdo_mysql gd soap zip \
