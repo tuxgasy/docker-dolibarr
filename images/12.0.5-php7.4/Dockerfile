@@ -51,7 +51,7 @@ RUN apt-get update -y \
     && docker-php-ext-install imap \
     && mv ${PHP_INI_DIR}/php.ini-production ${PHP_INI_DIR}/php.ini
 
-ENV DOLI_VERSION 13.0.3
+ENV DOLI_VERSION 12.0.5
 
 # Get Dolibarr
 ADD https://github.com/Dolibarr/dolibarr/archive/${DOLI_VERSION}.zip /tmp/dolibarr.zip
