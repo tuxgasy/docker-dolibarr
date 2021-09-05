@@ -41,7 +41,6 @@ RUN apt-get update -y \
         libxml2-dev \
         libzip-dev \
         default-mysql-client \
-        unzip \
     && apt-get autoremove -y \
     && docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
     && docker-php-ext-install -j$(nproc) calendar intl mysqli pdo_mysql gd soap zip \
@@ -54,11 +53,11 @@ RUN apt-get update -y \
 ENV DOLI_VERSION 11.0.5
 
 # Get Dolibarr
-ADD https://github.com/Dolibarr/dolibarr/archive/${DOLI_VERSION}.zip /tmp/dolibarr.zip
-RUN unzip -q /tmp/dolibarr.zip -d /tmp/dolibarr && \
-    cp -r /tmp/dolibarr/dolibarr-${DOLI_VERSION}/htdocs/* /var/www/html/ && \
+RUN curl -fLSs https://github.com/Dolibarr/dolibarr/archive/${DOLI_VERSION}.tar.gz |\
+    tar -C /tmp -xz && \
+    cp -r /tmp/dolibarr-${DOLI_VERSION}/htdocs/* /var/www/html/ && \
     ln -s /var/www/html /var/www/htdocs && \
-    cp -r /tmp/dolibarr/dolibarr-${DOLI_VERSION}/scripts /var/www/ && \
+    cp -r /tmp/dolibarr-${DOLI_VERSION}/scripts /var/www/ && \
     rm -rf /tmp/* && \
     mkdir -p /var/www/documents && \
     chown -R www-data:www-data /var/www
