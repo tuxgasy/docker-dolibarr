@@ -6,7 +6,7 @@
 # And then, you can run :
 # $ docker-compose up
 #
-# More informations about Docker-compose : https://docs.docker.com/compose/
+# More information about Docker-compose : https://docs.docker.com/compose/
 
 version: "3.8"
 
