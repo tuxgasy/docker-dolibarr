@@ -56,7 +56,10 @@ You can find several examples in the `examples` directory, such as:
  - [Running Dolibarr with secrets](./examples/with-secrets/dolibarr-with-secrets.md)
 
 ## Upgrading version and migrating DB
+The `install.lock` file is located inside the container volume `/var/www/documents`.
+
 Remove the `install.lock` file and start an updated version container. Ensure that env `DOLI_INSTALL_AUTO` is set to `1`. It will migrate Database to the new version.
+You can still use the standard way to upgrade through web interface.
 
 ## Environment variables summary
 

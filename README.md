@@ -11,7 +11,7 @@ Docker image for Dolibarr with auto installer on first boot.
 * 11.0.5-php5.6 11.0.5-php7.4 11.0.5 11
 * 12.0.5-php5.6 12.0.5-php7.4 12.0.5 12
 * 13.0.4-php7.4 13.0.4 13
-* 14.0.0-php7.4 14.0.0 14 latest
+* 14.0.1-php7.4 14.0.1 14 latest
 * develop
 
 ## What is Dolibarr ?
@@ -65,7 +65,10 @@ You can find several examples in the `examples` directory, such as:
  - [Running Dolibarr with secrets](./examples/with-secrets/dolibarr-with-secrets.md)
 
 ## Upgrading version and migrating DB
+The `install.lock` file is located inside the container volume `/var/www/documents`.
+
 Remove the `install.lock` file and start an updated version container. Ensure that env `DOLI_INSTALL_AUTO` is set to `1`. It will migrate Database to the new version.
+You can still use the standard way to upgrade through web interface.
 
 ## Environment variables summary
 
