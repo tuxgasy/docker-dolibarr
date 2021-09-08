@@ -7,6 +7,7 @@ jobs:
   include:
     - stage: deploy
       script: |
+        echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin &&
         docker run --rm -t \
         -v $(pwd):/myvol \
         -e DOCKER_USER=${DOCKER_USERNAME} \
