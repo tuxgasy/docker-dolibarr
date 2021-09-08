@@ -7,7 +7,7 @@ jobs:
   include:
     - stage: deploy
       script: |
-        run --rm -t \
+        docker run --rm -t \
         -v $(pwd):/myvol \
         -e DOCKER_USER=${DOCKER_USERNAME} \
         -e DOCKER_PASS=${DOCKER_PASSWORD} \
