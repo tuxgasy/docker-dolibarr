@@ -27,11 +27,11 @@ $> ./test.sh <DOLIBARR_VERSION> <PHP_VERSION>
 * DOLIBARR_VERSION : (Mandatory) the version you want to build and run.
 * PHP_VERSION : (Optional) the Dolibarr version with this PHP version you want to run specifically, if omitted it will use the most up to date PHP version.
 
-If you want to run Dolibarr 12.0.1 with PHP 5.6
+If you want to run Dolibarr 12.0.1 with PHP 7.4
 ```bash
-$> ./test.sh 12.0.1 5.6
+$> ./test.sh 12.0.1 7.4
 ```
-If you want to run Dolibarr 12.0.1 with most up to date PHP version
+If you want to run Dolibarr 12.0.1 with most up-to-date PHP version
 ```bash
 $> ./test.sh 12.0.1
 ```
