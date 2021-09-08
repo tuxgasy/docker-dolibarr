@@ -7,17 +7,7 @@ jobs:
   include:
     - stage: deploy
       script: |
-        echo ${DOCKER_USERNAME} &&
-        docker run --rm -t \
-        -v ${HOME}/.docker:/dockerconfig
-        -v $(pwd):/src \
-        -e DOCKER_USER=${DOCKER_USERNAME} \
-        -e DOCKER_PASS=${DOCKER_PASSWORD} \
-        -e PUSHRM_PROVIDER=dockerhub \
-        -e PUSHRM_FILE=/src/README.md \
-        -e PUSHRM_SHORT='Docker image for Dolibarr with auto installer on first boot.' \
-        -e PUSHRM_TARGET=docker.io/tuxgasy/dolibarr -e PUSHRM_DEBUG=1 \
-        chko/docker-pushrm:1
+        echo ${DOCKER_USERNAME}
 
     - stage: test
       if: type = pull_request
