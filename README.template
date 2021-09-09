@@ -5,6 +5,10 @@ Docker image for Dolibarr with auto installer on first boot.
 ## Supported tags
 %TAGS%
 
+**End of support for PHP < 7.3**
+
+**Dolibarr versions 7, 8 no more updated**
+
 ## What is Dolibarr ?
 
 Dolibarr ERP & CRM is a modern software package to manage your organization's activity (contacts, suppliers, invoices, orders, stocks, agenda, ...).
