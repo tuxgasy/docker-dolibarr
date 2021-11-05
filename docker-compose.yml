@@ -43,6 +43,8 @@ services:
         secrets:
             - mysql-user
             - mysql-password
+        volumes:
+            - ./.volumes/dolibarr/custom:/var/www/html/custom
         depends_on:
             - mariadb
         environment:

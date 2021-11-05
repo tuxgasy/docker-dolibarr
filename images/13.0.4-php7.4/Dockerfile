@@ -60,12 +60,14 @@ RUN curl -fLSs https://github.com/Dolibarr/dolibarr/archive/${DOLI_VERSION}.tar.
     cp -r /tmp/dolibarr-${DOLI_VERSION}/scripts /var/www/ && \
     rm -rf /tmp/* && \
     mkdir -p /var/www/documents && \
+    mkdir -p /var/www/html/custom && \
     chown -R www-data:www-data /var/www
 
 RUN rm -rf /var/lib/apt/lists/*
 
 EXPOSE 80
 VOLUME /var/www/documents
+VOLUME /var/www/html/custom
 
 COPY docker-run.sh /usr/local/bin/
 ENTRYPOINT ["docker-run.sh"]
