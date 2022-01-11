@@ -1,0 +1,57 @@
+version: "3.4"
+
+services:
+  db:
+    image: mysql:8.0.20
+    container_name: doli_mysql
+    command: mysqld --default-authentication-plugin=mysql_native_password --max_allowed_packet=32505856
+    restart: always
+    env_file:
+      - ./.env
+    environment:
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASS}
+      - MYSQL_PASSWORD=${DB_PASS}
+    volumes:
+      - ./docker/db/data:/var/lib/mysql
+
+  web:
+    image: tuxgasy/dolibarr
+    container_name: doli_web
+    env_file:
+      - ./.env
+    environment:
+      DOLI_DB_HOST: ${DB_HOST}
+      DOLI_DB_USER: ${DB_USER}
+      DOLI_DB_PASSWORD: ${DB_PASS}
+      DOLI_DB_HOST_PORT: ${DB_PORT}
+      DOLI_DB_NAME: ${DB_NAME}
+      DOLI_URL_ROOT: ${SITE_URL}
+      PHP_INI_DATE_TIMEZONE: 'Europe/Paris'
+    ports:
+      - "8181:80"
+    links:
+      - db
+    volumes:
+      - ./docker/doli/documents:/var/www/documents
+
+  nginx:
+    container_name: doli_nginx
+    image: nginx:latest
+    ports:
+      - 80:80
+      - 443:443
+    restart: always
+    volumes:
+      - ./docker/nginx:/etc/nginx/conf.d/:ro
+      - ./docker/certbot/www:/var/www/certbot/:ro
+      - ./docker/certbot/conf:/etc/letsencrypt
+
+  certbot:
+    image: certbot/certbot
+    container_name: skreept_certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    volumes:
+      - ./docker/certbot/conf:/etc/letsencrypt
+      - ./docker/certbot/www:/var/www/certbot
