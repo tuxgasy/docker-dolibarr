@@ -42,6 +42,8 @@ function initDolibarr()
 date.timezone = ${PHP_INI_DATE_TIMEZONE}
 sendmail_path = /usr/sbin/sendmail -t -i
 memory_limit = ${PHP_INI_MEMORY_LIMIT}
+upload_max_filesize = ${PHP_INI_UPLOAD_MAX_FILESIZE}
+post_max_size = ${PHP_INI_POST_MAX_SIZE}
 EOF
 
 if [[ ! -f /var/www/html/conf/conf.php ]]; then
