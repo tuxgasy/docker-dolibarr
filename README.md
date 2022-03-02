@@ -70,6 +70,13 @@ You can find several examples in the `examples` directory, such as:
 ## Upgrading version and migrating DB
 The `install.lock` file is located inside the container volume `/var/www/documents`.
 
+## Early support for PostgreSQL
+Setting `DOLI_DB_TYPE` to `pgsql` enable Dolibarr to run with a PostgreSQL database.
+When set to use `pgsql`, Dolibarr must be installed manually on it's first execution:
+ - Browse to `http://0.0.0.0/install`;
+ - Follow the installation setup;
+ - Add `install.lock` inside the container volume `/var/www/html/documents` (ex `docker-compose exec services-data_dolibarr_1 /bin/bash -c "touch /var/www/html/documents/install.lock"`).
+
 Remove the `install.lock` file and start an updated version container. Ensure that env `DOLI_INSTALL_AUTO` is set to `1`. It will migrate Database to the new version.
 You can still use the standard way to upgrade through web interface.
 
@@ -78,6 +85,7 @@ You can still use the standard way to upgrade through web interface.
 | Variable                      | Default value                  | Description |
 | ----------------------------- | ------------------------------ | ----------- |
 | **DOLI_INSTALL_AUTO**         | *1*                            | 1: The installation will be executed on first boot
+| **DOLI_DB_TYPE**              | *mysqli*                       | Type of the DB server (**mysqli**, pgsql)
 | **DOLI_DB_HOST**              | *mysql*                        | Host name of the MariaDB/MySQL server
 | **DOLI_DB_HOST_PORT**         | *3306*                         | Host port of the MariaDB/MySQL server
 | **DOLI_DB_USER**              | *doli*                         | Database user
