@@ -59,7 +59,7 @@ if [[ ! -f /var/www/html/conf/conf.php ]]; then
 \$dolibarr_main_db_prefix='llx_';
 \$dolibarr_main_db_user='${DOLI_DB_USER}';
 \$dolibarr_main_db_pass='${DOLI_DB_PASSWORD}';
-\$dolibarr_main_db_type='mysqli';
+\$dolibarr_main_db_type='${DOLI_DB_TYPE}';
 \$dolibarr_main_authentication='${DOLI_AUTH}';
 EOF
     if [[ ${DOLI_AUTH} =~ .*ldap.* ]]; then
@@ -81,7 +81,11 @@ EOF
 
   echo "[INIT] => update ownership for file in Dolibarr Config ..."
   chown www-data:www-data /var/www/html/conf/conf.php
-  chmod 400 /var/www/html/conf/conf.php
+  if [[ ${DOLI_DB_TYPE} == "pgsql" && ! -f /var/www/documents/install.lock ]]; then
+    chmod 600 /var/www/html/conf/conf.php
+  else
+    chmod 400 /var/www/html/conf/conf.php
+  fi
 
   if [[ ${CURRENT_UID} -ne ${WWW_USER_ID} || ${CURRENT_GID} -ne ${WWW_GROUP_ID} ]]; then
     # Refresh file ownership cause it has changed
@@ -194,7 +198,7 @@ function run()
   initDolibarr
   echo "Current Version is : ${DOLI_VERSION}"
 
-  if [[ ${DOLI_INSTALL_AUTO} -eq 1 && ! -f /var/www/documents/install.lock ]]; then
+  if [[ ${DOLI_INSTALL_AUTO} -eq 1 && ! -f /var/www/documents/install.lock && ${DOLI_DB_TYPE} != "pgsql" ]]; then
     waitForDataBase
 
     mysql -u ${DOLI_DB_USER} -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} -P ${DOLI_DB_HOST_PORT} ${DOLI_DB_NAME} -e "SELECT Q.LAST_INSTALLED_VERSION FROM (SELECT INET_ATON(CONCAT(value, REPEAT('.0', 3 - CHAR_LENGTH(value) + CHAR_LENGTH(REPLACE(value, '.', ''))))) as VERSION_ATON, value as LAST_INSTALLED_VERSION FROM llx_const WHERE name IN ('MAIN_VERSION_LAST_INSTALL', 'MAIN_VERSION_LAST_UPGRADE') and entity=0) Q ORDER BY VERSION_ATON DESC LIMIT 1" > /tmp/lastinstall.result 2>&1
