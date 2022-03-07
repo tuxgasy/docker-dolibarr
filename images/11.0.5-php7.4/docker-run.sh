@@ -81,7 +81,7 @@ EOF
 
   echo "[INIT] => update ownership for file in Dolibarr Config ..."
   chown www-data:www-data /var/www/html/conf/conf.php
-  if [[ ${DOLI_DB_TYPE} == "pgsql" ]]; then
+  if [[ ${DOLI_DB_TYPE} == "pgsql" && ! -f /var/www/documents/install.lock ]]; then
     chmod 600 /var/www/html/conf/conf.php
   else
     chmod 400 /var/www/html/conf/conf.php
