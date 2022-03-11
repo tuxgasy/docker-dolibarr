@@ -14,6 +14,7 @@ networks:
     internal: true
 
 volumes:
+  dolibarr-custom:
   dolibarr-docs:
   mysql-data:
   traefik-acme:
@@ -58,6 +59,7 @@ services:
       - "traefik.http.services.dolibarr.loadbalancer.server.scheme=http"
     volumes:
       - dolibarr-docs:/var/www/documents
+      - dolibarr-custom:/var/www/html/custom
     networks:
       - backend-with-internet
       - backend-isolated

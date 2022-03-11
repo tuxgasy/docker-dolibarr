@@ -35,6 +35,7 @@ services:
       - db
     volumes:
       - ./docker/doli/documents:/var/www/documents
+      - ./docker/doli/custom:/var/www/html/custom
 
   nginx:
     container_name: doli_nginx
