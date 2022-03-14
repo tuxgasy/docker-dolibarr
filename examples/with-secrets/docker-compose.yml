@@ -7,6 +7,7 @@ networks:
     internal: false
 
 volumes:
+  dolibarr-custom:
   dolibarr-docs:
   mysql-data:
 
@@ -39,6 +40,7 @@ services:
       - 80:80
     volumes:
       - dolibarr-docs:/var/www/documents
+      - dolibarr-custom:/var/www/html/custom
     networks:
       - internal-pod
       - external-pod
