@@ -226,6 +226,12 @@ DOLI_DB_PASSWORD=$(get_env_value 'DOLI_DB_PASSWORD' 'doli_pass')
 DOLI_ADMIN_LOGIN=$(get_env_value 'DOLI_ADMIN_LOGIN' 'admin')
 DOLI_ADMIN_PASSWORD=$(get_env_value 'DOLI_ADMIN_PASSWORD' 'admin')
 
+if [[ ${DOLI_CRON} -eq 1 ]]; then
+    echo "/var/www/scripts/cron/cron_run_jobs.php ${DOLI_CRON_KEY} ${DOLI_CRON_USER} > /var/www/documents/cron_run_jobs.php.log" > /etc/cron.d/dolibarr
+    cron -f
+    exit 0
+fi
+
 run
 
 set -e

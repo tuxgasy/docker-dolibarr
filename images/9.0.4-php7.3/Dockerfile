@@ -24,6 +24,8 @@ ENV DOLI_LDAP_BIND_DN ''
 ENV DOLI_LDAP_BIND_PASS ''
 ENV DOLI_LDAP_DEBUG false
 
+ENV DOLI_CRON 0
+
 ENV WWW_USER_ID 33
 ENV WWW_GROUP_ID 33
 
@@ -44,6 +46,7 @@ RUN apt-get update -y \
         libzip-dev \
         default-mysql-client \
         postgresql-client \
+        cron \
     && apt-get autoremove -y \
     && docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
     && docker-php-ext-install -j$(nproc) calendar intl mysqli pdo_mysql gd soap zip \
