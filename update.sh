@@ -14,7 +14,8 @@ tags=""
 rm -rf "${BASE_DIR}/images" "${BASE_DIR}/docker-compose-links"
 
 if [ "${DOCKER_BUILD}" = "1" ] && [ "${DOCKER_PUSH}" = "1" ]; then
-  docker buildx create --use
+  docker buildx create --name multiarch --driver docker-container --use
+  docker buildx inspect --bootstrap
 fi
 
 for dolibarrVersion in "${DOLIBARR_VERSIONS[@]}"; do
