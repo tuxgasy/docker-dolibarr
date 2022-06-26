@@ -198,7 +198,7 @@ function run()
   initDolibarr
   echo "Current Version is : ${DOLI_VERSION}"
 
-  if [[ ${DOLI_INSTALL_AUTO} -eq 1 && ! -f /var/www/documents/install.lock && ${DOLI_DB_TYPE} != "pgsql" ]]; then
+  if [[ ${DOLI_INSTALL_AUTO} -eq 1 && ${DOLI_CRON} -ne 1 && ! -f /var/www/documents/install.lock && ${DOLI_DB_TYPE} != "pgsql" ]]; then
     waitForDataBase
 
     mysql -u ${DOLI_DB_USER} -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} -P ${DOLI_DB_HOST_PORT} ${DOLI_DB_NAME} -e "SELECT Q.LAST_INSTALLED_VERSION FROM (SELECT INET_ATON(CONCAT(value, REPEAT('.0', 3 - CHAR_LENGTH(value) + CHAR_LENGTH(REPLACE(value, '.', ''))))) as VERSION_ATON, value as LAST_INSTALLED_VERSION FROM llx_const WHERE name IN ('MAIN_VERSION_LAST_INSTALL', 'MAIN_VERSION_LAST_UPGRADE') and entity=0) Q ORDER BY VERSION_ATON DESC LIMIT 1" > /tmp/lastinstall.result 2>&1
@@ -229,6 +229,13 @@ DOLI_ADMIN_PASSWORD=$(get_env_value 'DOLI_ADMIN_PASSWORD' 'admin')
 run
 
 set -e
+
+if [[ ${DOLI_CRON} -eq 1 ]]; then
+    echo "PATH=\$PATH:/usr/local/bin" > /etc/cron.d/dolibarr
+    echo "*/5 * * * * www-data /var/www/scripts/cron/cron_run_jobs.php ${DOLI_CRON_KEY} ${DOLI_CRON_USER} > /var/www/documents/cron_run_jobs.php.log 2>&1" >> /etc/cron.d/dolibarr
+    cron -f
+    exit 0
+fi
 
 if [ "${1#-}" != "$1" ]; then
   set -- apache2-foreground "$@"

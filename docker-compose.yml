@@ -36,6 +36,29 @@ services:
         networks:
             - internal-pod
 
+    cron:
+        build:
+            context: ./docker-compose-links/${DOLI_VERSION}${PHP_VERSION}
+        image: tuxgasy/dolibarr:${DOLI_VERSION}${PHP_VERSION}
+        secrets:
+            - mysql-user
+            - mysql-password
+        environment:
+            DOLI_CRON: 1
+            DOLI_CRON_KEY: xxxx
+            DOLI_CRON_USER: administrator
+            DOLI_DB_USER_FILE: /run/secrets/mysql-user
+            DOLI_DB_PASSWORD_FILE: /run/secrets/mysql-password
+            DOLI_ADMIN_LOGIN: administrator
+            DOLI_ADMIN_PASSWORD: admin456
+            DOLI_DB_HOST: mariadb
+            DOLI_DB_NAME: dolibarr
+            DOLI_URL_ROOT: http://0.0.0.0
+            WWW_USER_ID: 1000
+            WWW_GROUP_ID: 1000
+        networks:
+            - internal-pod
+
     web:
         build:
             context: ./docker-compose-links/${DOLI_VERSION}${PHP_VERSION}
