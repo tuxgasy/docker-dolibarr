@@ -1,4 +1,6 @@
-FROM php:7.4-apache-buster
+ARG ARCH=
+
+FROM ${ARCH}/php:7.4-apache-buster
 
 LABEL maintainer="Garcia MICHEL <garcia@soamichel.fr>"
 
@@ -52,7 +54,7 @@ RUN apt-get update -y \
     && docker-php-ext-install -j$(nproc) calendar intl mysqli pdo_mysql gd soap zip \
     && docker-php-ext-configure pgsql -with-pgsql \
     && docker-php-ext-install pdo_pgsql pgsql \
-    && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
+    && docker-php-ext-configure ldap --with-libdir=lib/$(gcc -dumpmachine)/ \
     && docker-php-ext-install -j$(nproc) ldap \
     && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
     && docker-php-ext-install imap \
