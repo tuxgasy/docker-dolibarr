@@ -1,12 +1,16 @@
 language: minimal
 
+arch:
+    - amd64
+    - arm64
+
 services:
   - docker
 
 jobs:
   include:
     - stage: test
-      if: type = pull_request
+      if: type = pull_request AND arch = amd64
       before_install:
         - ./update.sh
       script:
@@ -15,7 +19,7 @@ jobs:
         - echo "Run the update.sh script before pull request"
 
     - stage: test
-      if: type = pull_request
+      if: type = pull_request AND arch = amd64
       env:
         - DOLI_INSTALL_AUTO=0
       before_install:
