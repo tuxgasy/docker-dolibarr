@@ -1,6 +1,6 @@
 ARG ARCH=
 
-FROM ${ARCH}/php:%PHP_BASE_IMAGE%
+FROM ${ARCH}php:%PHP_BASE_IMAGE%
 
 LABEL maintainer="Garcia MICHEL <garcia@soamichel.fr>"
 

@@ -1,6 +1,6 @@
 ARG ARCH=
 
-FROM ${ARCH}/php:7.4-apache-buster
+FROM ${ARCH}php:7.4-apache-buster
 
 LABEL maintainer="Garcia MICHEL <garcia@soamichel.fr>"
 
