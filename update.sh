@@ -13,6 +13,10 @@ tags=""
 
 rm -rf "${BASE_DIR}/images" "${BASE_DIR}/docker-compose-links"
 
+if [ "${DOCKER_BUILD}" = "1" ] && [ "${DOCKER_PUSH}" = "1" ]; then
+  docker buildx create --use
+fi
+
 for dolibarrVersion in "${DOLIBARR_VERSIONS[@]}"; do
   echo "Generate Dockerfile for Dolibarr ${dolibarrVersion}"
 
