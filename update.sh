@@ -14,7 +14,7 @@ tags=""
 rm -rf "${BASE_DIR}/images" "${BASE_DIR}/docker-compose-links"
 
 if [ "${DOCKER_BUILD}" = "1" ] && [ "${DOCKER_PUSH}" = "1" ]; then
-  docker buildx create --platform linux/arm/v7,linux/arm64/v8,linux/amd64 --use
+  docker buildx create --platform linux/arm/v7,linux/arm64/v8,linux/amd64 --driver docker-container --use
   docker buildx inspect --bootstrap
 fi
 
