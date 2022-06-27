@@ -15,7 +15,7 @@ rm -rf "${BASE_DIR}/images" "${BASE_DIR}/docker-compose-links"
 
 if [ "${DOCKER_BUILD}" = "1" ] && [ "${DOCKER_PUSH}" = "1" ]; then
   docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-  docker buildx create --platform linux/arm/v7,linux/arm64/v8,linux/amd64 --driver docker-container --use
+  docker buildx create --driver docker-container --use
   docker buildx inspect --bootstrap
 fi
 
@@ -70,6 +70,7 @@ for dolibarrVersion in "${DOLIBARR_VERSIONS[@]}"; do
         docker buildx build \
           --push \
           --compress \
+          --progress plain \
           --platform linux/arm/v7,linux/arm64/v8,linux/amd64 \
           --tag "tuxgasy/dolibarr:${currentTag}" \
           "${dir}"

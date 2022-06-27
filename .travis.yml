@@ -26,7 +26,7 @@ jobs:
         - docker ps | grep -q dolibarr
 
     - stage: deploy
-      if: type = push AND branch = arm-support
+      if: type = push AND branch = master
       env:
         - DOCKER_BUILD=1 DOCKER_PUSH=1
       before_install:
