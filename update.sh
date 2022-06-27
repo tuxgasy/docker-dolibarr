@@ -60,10 +60,10 @@ for dolibarrVersion in "${DOLIBARR_VERSIONS[@]}"; do
     cp "${BASE_DIR}/docker-run.sh" "${dir}/docker-run.sh"
 
     if [ "${DOCKER_BUILD}" = "1" ]; then
-        docker build --compress --tag "tuxgasy/dolibarr:${currentTag}-${arch}" "${dir}"
+        docker build --compress --tag "tuxgasy/dolibarr:${currentTag}" "${dir}"
     fi
     if [ "${DOCKER_PUSH}" = "1" ]; then
-      docker push "tuxgasy/dolibarr:${currentTag}-${arch}"
+      docker push "tuxgasy/dolibarr:${currentTag}"
     fi
   done
 
