@@ -13,6 +13,11 @@ tags=""
 
 rm -rf "${BASE_DIR}/images" "${BASE_DIR}/docker-compose-links"
 
+if [ "${DOCKER_BUILD}" = "1" ] && [ "${DOCKER_PUSH}" = "1" ]; then
+  docker buildx create --platform linux/arm/v7,linux/arm64/v8,linux/amd64 --use
+  docker buildx inspect --bootstrap
+fi
+
 for dolibarrVersion in "${DOLIBARR_VERSIONS[@]}"; do
   echo "Generate Dockerfile for Dolibarr ${dolibarrVersion}"
 
@@ -60,10 +65,16 @@ for dolibarrVersion in "${DOLIBARR_VERSIONS[@]}"; do
     cp "${BASE_DIR}/docker-run.sh" "${dir}/docker-run.sh"
 
     if [ "${DOCKER_BUILD}" = "1" ]; then
+      if [ "${DOCKER_PUSH}" = "1" ]; then
+        docker buildx build \
+          --push \
+          --compress \
+          --platform linux/arm/v7,linux/arm64/v8,linux/amd64 \
+          --tag "tuxgasy/dolibarr:${currentTag}" \
+          "${dir}"
+      else
         docker build --compress --tag "tuxgasy/dolibarr:${currentTag}" "${dir}"
-    fi
-    if [ "${DOCKER_PUSH}" = "1" ]; then
-      docker push "tuxgasy/dolibarr:${currentTag}"
+      fi
     fi
   done
 
