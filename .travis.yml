@@ -6,7 +6,7 @@ services:
 jobs:
   include:
     - stage: test
-      if: type = pull_request AND arch = amd64
+      if: type = pull_request
       before_install:
         - ./update.sh
       script:
@@ -15,7 +15,7 @@ jobs:
         - echo "Run the update.sh script before pull request"
 
     - stage: test
-      if: type = pull_request AND arch = amd64
+      if: type = pull_request
       env:
         - DOLI_INSTALL_AUTO=0
       before_install:
@@ -26,7 +26,7 @@ jobs:
         - docker ps | grep -q dolibarr
 
     - stage: deploy
-      if: type = push AND branch = master
+      if: type = push AND branch = arm-support
       env:
         - DOCKER_BUILD=1 DOCKER_PUSH=1
       before_install:
