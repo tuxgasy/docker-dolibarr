@@ -13,11 +13,6 @@ tags=""
 
 rm -rf "${BASE_DIR}/images" "${BASE_DIR}/docker-compose-links"
 
-if [ "${DOCKER_BUILD}" = "1" ] && [ "${DOCKER_PUSH}" = "1" ]; then
-  docker buildx create --name multiarch --driver docker-container --use
-  docker buildx inspect --bootstrap
-fi
-
 for dolibarrVersion in "${DOLIBARR_VERSIONS[@]}"; do
   echo "Generate Dockerfile for Dolibarr ${dolibarrVersion}"
 
@@ -65,14 +60,21 @@ for dolibarrVersion in "${DOLIBARR_VERSIONS[@]}"; do
     cp "${BASE_DIR}/docker-run.sh" "${dir}/docker-run.sh"
 
     if [ "${DOCKER_BUILD}" = "1" ]; then
+      for arch in "amd64" "arm32v7" "arm64v8"; do
+        docker build --compress --build-arg ARCH=${arch} --tag "tuxgasy/dolibarr:${currentTag}-${arch}" "${dir}"
+
+        if [ "${DOCKER_PUSH}" = "1" ]; then
+          docker push "tuxgasy/dolibarr:${currentTag}-${arch}"
+        fi
+      done
+
+      docker manifest create "tuxgasy/dolibarr:${currentTag}" \
+        --amend "tuxgasy/dolibarr:${currentTag}-amd64" \
+        --amend "tuxgasy/dolibarr:${currentTag}-arm32v7" \
+        --amend "tuxgasy/dolibarr:${currentTag}-arm64v8"
+
       if [ "${DOCKER_PUSH}" = "1" ]; then
-        docker buildx build \
-          --push \
-          --progress plain \
-          --platform=linux/amd64,linux/arm/v7,linux/arm64/v8 \
-          --compress --tag "tuxgasy/dolibarr:${currentTag}" "${dir}"
-      else
-        docker build --compress --tag "tuxgasy/dolibarr:${currentTag}" "${dir}"
+        docker manifest push "tuxgasy/dolibarr:${currentTag}"
       fi
     fi
   done
