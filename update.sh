@@ -60,7 +60,7 @@ for dolibarrVersion in "${DOLIBARR_VERSIONS[@]}"; do
     cp "${BASE_DIR}/docker-run.sh" "${dir}/docker-run.sh"
 
     if [ "${DOCKER_BUILD}" = "1" ]; then
-      for arch in "amd64" "arm32v7" "arm64v8"; do
+      for arch in "amd64" "arm64v8"; do
         docker build --compress --build-arg ARCH=${arch}/ --tag "tuxgasy/dolibarr:${currentTag}-${arch}" "${dir}"
 
         if [ "${DOCKER_PUSH}" = "1" ]; then
@@ -70,7 +70,6 @@ for dolibarrVersion in "${DOLIBARR_VERSIONS[@]}"; do
 
       docker manifest create "tuxgasy/dolibarr:${currentTag}" \
         --amend "tuxgasy/dolibarr:${currentTag}-amd64" \
-        --amend "tuxgasy/dolibarr:${currentTag}-arm32v7" \
         --amend "tuxgasy/dolibarr:${currentTag}-arm64v8"
 
       if [ "${DOCKER_PUSH}" = "1" ]; then
