@@ -61,7 +61,7 @@ for dolibarrVersion in "${DOLIBARR_VERSIONS[@]}"; do
 
     if [ "${DOCKER_BUILD}" = "1" ]; then
       for arch in "amd64" "arm32v7" "arm64v8"; do
-        docker build --compress --build-arg ARCH=${arch} --tag "tuxgasy/dolibarr:${currentTag}-${arch}" "${dir}"
+        docker build --compress --build-arg ARCH=${arch}/ --tag "tuxgasy/dolibarr:${currentTag}-${arch}" "${dir}"
 
         if [ "${DOCKER_PUSH}" = "1" ]; then
           docker push "tuxgasy/dolibarr:${currentTag}-${arch}"
