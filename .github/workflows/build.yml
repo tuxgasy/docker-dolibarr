@@ -13,7 +13,7 @@ jobs:
             - env:
                 DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
                 DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
-            - run: |
+              run: |
                 docker run --rm -t \
                 -v $(pwd):/src \
                 -e DOCKER_USER=$DOCKER_HUB_USERNAME \
