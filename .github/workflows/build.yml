@@ -11,6 +11,7 @@ jobs:
         steps:
             - uses: actions/checkout@v3
             - run: |
+                echo "Secret : ${{ secrets.DOCKER_HUB_USERNAME }}"
                 docker run --rm -t \
                 -v $(pwd):/src \
                 -e DOCKER_USER='${{ secrets.DOCKER_HUB_USERNAME }}' \
