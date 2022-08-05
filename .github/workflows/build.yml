@@ -10,7 +10,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
-              run: |
+            - run: |
                 docker run --rm -t \
                 -v $(pwd):/src \
                 -e DOCKER_USER='${{ secrets.DOCKER_HUB_USERNAME }}' \
