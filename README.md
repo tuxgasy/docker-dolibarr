@@ -17,6 +17,10 @@ Docker image for Dolibarr with auto installer on first boot.
 
 **Dolibarr versions 7, 8 no more updated**
 
+## Supported architectures
+
+Linux x86-64 (`amd64`), ARMv7 32-bit (`arm32v7` :warning: MariaDB/Mysql docker images don't support it) and ARMv8 64-bit (`arm64v8`)
+
 ## What is Dolibarr ?
 
 Dolibarr ERP & CRM is a modern software package to manage your organization's activity (contacts, suppliers, invoices, orders, stocks, agenda, ...).

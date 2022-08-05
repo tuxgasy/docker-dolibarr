@@ -13,6 +13,12 @@ tags=""
 
 rm -rf "${BASE_DIR}/images" "${BASE_DIR}/docker-compose-links"
 
+if [ "${DOCKER_BUILD}" = "1" ] && [ "${DOCKER_PUSH}" = "1" ]; then
+  docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+  docker buildx create --driver docker-container --use
+  docker buildx inspect --bootstrap
+fi
+
 for dolibarrVersion in "${DOLIBARR_VERSIONS[@]}"; do
   echo "Generate Dockerfile for Dolibarr ${dolibarrVersion}"
 
@@ -43,6 +49,14 @@ for dolibarrVersion in "${DOLIBARR_VERSIONS[@]}"; do
       tags="${tags} ${currentTag}"
     fi
 
+    buildOptionTags="--tag tuxgasy/dolibarr:${currentTag}"
+    if [ "${dolibarrVersion}" != "develop" ]; then
+      buildOptionTags="${buildOptionTags} --tag tuxgasy/dolibarr:${dolibarrVersion} --tag tuxgasy/dolibarr:${dolibarrMajor}"
+    fi
+    if [ "${dolibarrVersion}" = "${DOLIBARR_LATEST_TAG}" ]; then
+      buildOptionTags="${buildOptionTags} --tag tuxgasy/dolibarr:latest"
+    fi
+
     dir="${BASE_DIR}/images/${currentTag}"
 
     if [ "${php_version}" = "7.4" ]; then
@@ -60,27 +74,21 @@ for dolibarrVersion in "${DOLIBARR_VERSIONS[@]}"; do
     cp "${BASE_DIR}/docker-run.sh" "${dir}/docker-run.sh"
 
     if [ "${DOCKER_BUILD}" = "1" ]; then
-        docker build --compress --tag "tuxgasy/dolibarr:${currentTag}" "${dir}"
-    fi
-    if [ "${DOCKER_PUSH}" = "1" ]; then
-      docker push "tuxgasy/dolibarr:${currentTag}"
+      if [ "${DOCKER_PUSH}" = "1" ]; then
+        docker buildx build \
+          --push \
+          --compress \
+          --platform linux/arm/v7,linux/arm64,linux/amd64 \
+          ${buildOptionTags} \
+          "${dir}"
+      else
+        docker build \
+          --compress \
+          ${buildOptionTags} \
+          "${dir}"
+      fi
     fi
   done
-
-  if [ "${DOCKER_BUILD}" = "1" ]; then
-    docker tag "tuxgasy/dolibarr:${currentTag}" "tuxgasy/dolibarr:${dolibarrVersion}"
-    docker tag "tuxgasy/dolibarr:${currentTag}" "tuxgasy/dolibarr:${dolibarrMajor}"
-    if [ "${dolibarrVersion}" = "${DOLIBARR_LATEST_TAG}" ]; then
-      docker tag "tuxgasy/dolibarr:${currentTag}" tuxgasy/dolibarr:latest
-    fi
-  fi
-  if [ "${DOCKER_PUSH}" = "1" ]; then
-    docker push "tuxgasy/dolibarr:${dolibarrVersion}"
-    docker push "tuxgasy/dolibarr:${dolibarrMajor}"
-    if [ "${dolibarrVersion}" = "${DOLIBARR_LATEST_TAG}" ]; then
-      docker push tuxgasy/dolibarr:latest
-    fi
-  fi
 
   if [ "${dolibarrVersion}" = "develop" ]; then
     tags="${tags} develop"
