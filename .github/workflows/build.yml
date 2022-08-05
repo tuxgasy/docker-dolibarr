@@ -1,0 +1,22 @@
+name: build
+on:
+    push:
+        branches:
+            - master
+            - arm-support
+
+jobs:
+    update-readme:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - run: |
+                docker run --rm -t \
+                -v $(pwd):/src \
+                -e DOCKER_USER=${DOCKER_HUB_USERNAME} \
+                -e DOCKER_PASS=${DOCKER_HUB_PASSWORD} \
+                -e PUSHRM_PROVIDER=dockerhub \
+                -e PUSHRM_FILE=README.md \
+                -e PUSHRM_SHORT='Docker image for Dolibarr with auto installer on first boot.' \
+                -e PUSHRM_TARGET=docker.io/tuxgasy/dolibarr -e PUSHRM_DEBUG=1 \
+                chko/docker-pushrm:1
