@@ -232,13 +232,25 @@ set -e
 
 if [[ ${DOLI_CRON} -eq 1 ]]; then
   DOLI_CRON_FILE=/etc/cron.d/dolibarr
+  if [[ -z ${DOLI_CRON_USER} ]]; then
+    echo "'DOLI_CRON_USER' is undefined or empty"
+    echo "Unable to create cron task !"
+    exit 1
+  fi
+  if [[ -z ${DOLI_CRON_KEY} ]]; then
+    echo "'DOLI_CRON_KEY' is undefined or empty"
+    echo "Unable to create cron task !"
+    exit 1
+  fi
+  # Remove old file
+  if [[ -f ${DOLI_CRON_FILE} ]]; then
+    rm -rf ${DOLI_CRON_FILE}
+  fi
+  echo "Create cron task for dolibarr..."
+  echo "PATH=\$PATH:/usr/local/bin" > ${DOLI_CRON_FILE}
+  echo "*/5 * * * * www-data /var/www/scripts/cron/cron_run_jobs.php ${DOLI_CRON_KEY} ${DOLI_CRON_USER} > /var/www/documents/cron_run_jobs.php.log 2>&1" >> ${DOLI_CRON_FILE}
   # Run cron service
   service cron start > /dev/null 2>&1
-  if [[ ! -f ${DOLI_CRON_FILE} ]]; then
-    echo "Create cron task for dolibarr..."
-    echo "PATH=\$PATH:/usr/local/bin" > ${DOLI_CRON_FILE}
-    echo "*/5 * * * * www-data /var/www/scripts/cron/cron_run_jobs.php ${DOLI_CRON_KEY} ${DOLI_CRON_USER} > /var/www/documents/cron_run_jobs.php.log 2>&1" >> ${DOLI_CRON_FILE}
-  fi
 fi
 
 if [ "${1#-}" != "$1" ]; then
