@@ -232,6 +232,16 @@ set -e
 
 if [[ ${DOLI_CRON} -eq 1 ]]; then
   DOLI_CRON_FILE=/etc/cron.d/dolibarr
+  if [[ -z ${DOLI_CRON_USER} ]]; then
+    echo "'DOLI_CRON_USER' is undefined or empty"
+    echo "Unable to create cron task !"
+    exit 1
+  fi
+  if [[ -z ${DOLI_CRON_KEY} ]]; then
+    echo "'DOLI_CRON_KEY' is undefined or empty"
+    echo "Unable to create cron task !"
+    exit 1
+  fi
   # Remove old file
   if [[ -f ${DOLI_CRON_FILE} ]]; then
     rm -rf ${DOLI_CRON_FILE}
