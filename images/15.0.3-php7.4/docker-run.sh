@@ -226,6 +226,8 @@ DOLI_DB_USER=$(get_env_value 'DOLI_DB_USER' 'doli')
 DOLI_DB_PASSWORD=$(get_env_value 'DOLI_DB_PASSWORD' 'doli_pass')
 DOLI_ADMIN_LOGIN=$(get_env_value 'DOLI_ADMIN_LOGIN' 'admin')
 DOLI_ADMIN_PASSWORD=$(get_env_value 'DOLI_ADMIN_PASSWORD' 'admin')
+DOLI_CRON_KEY=$(get_env_value 'DOLI_CRON_KEY' 'xxxx')
+DOLI_CRON_USER=$(get_env_value 'DOLI_CRON_USER' 'admin')
 
 run
 
