@@ -233,7 +233,7 @@ set -e
 
 if [[ ${DOLI_CRON} -eq 1 ]]; then
     echo "PATH=\$PATH:/usr/local/bin" > /etc/cron.d/dolibarr
-    echo "*/5 * * * * www-data /var/www/scripts/cron/cron_run_jobs.php ${DOLI_CRON_KEY} ${DOLI_CRON_USER} > /var/www/documents/cron_run_jobs.php.log 2>&1" >> /etc/cron.d/dolibarr
+    echo "*/5 * * * * root /bin/su www-data -s /bin/sh -c '/var/www/scripts/cron/cron_run_jobs.php ${DOLI_CRON_KEY} ${DOLI_CRON_USER}' > /proc/1/fd/1 2> /proc/1/fd/2" >> /etc/cron.d/dolibarr
     cron -f
     exit 0
 fi
