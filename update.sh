@@ -35,6 +35,12 @@ for dolibarrVersion in "${DOLIBARR_VERSIONS[@]}"; do
     php_base_images=( "7.4-apache-buster" )
   elif [ "${dolibarrMajor}" = "12" ]; then
     php_base_images=( "7.4-apache-buster" )
+  elif [ "${dolibarrMajor}" = "13" ]; then
+    php_base_images=( "7.4-apache-buster" )
+  elif [ "${dolibarrMajor}" = "14" ]; then
+    php_base_images=( "7.4-apache-buster" )
+  elif [ "${dolibarrMajor}" = "15" ]; then
+    php_base_images=( "7.4-apache-buster" )
   else
     php_base_images=( "7.4-apache-buster" )
   fi
