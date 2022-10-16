@@ -13,7 +13,7 @@ tags=""
 
 rm -rf "${BASE_DIR}/images" "${BASE_DIR}/docker-compose-links"
 
-if [ "${DOCKER_BUILD}" = "1" ] && [ "${DOCKER_PUSH}" = "1" ]; then
+if [ "${DOCKER_BUILD}" = "1" ] || [ "${DOCKER_PUSH}" = "1" ]; then
   docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
   docker buildx create --driver docker-container --use
   docker buildx inspect --bootstrap
@@ -27,20 +27,8 @@ for dolibarrVersion in "${DOLIBARR_VERSIONS[@]}"; do
 
   # Mapping version according https://wiki.dolibarr.org/index.php/Versions
   # Regarding PHP Supported version : https://www.php.net/supported-versions.php
-  if [ "${dolibarrMajor}" = "9" ]; then
-    php_base_images=( "7.3-apache-buster" )
-  elif [ "${dolibarrMajor}" = "10" ]; then
-    php_base_images=( "7.3-apache-buster" )
-  elif [ "${dolibarrMajor}" = "11" ]; then
-    php_base_images=( "7.4-apache-buster" )
-  elif [ "${dolibarrMajor}" = "12" ]; then
-    php_base_images=( "7.4-apache-buster" )
-  elif [ "${dolibarrMajor}" = "13" ]; then
-    php_base_images=( "7.4-apache-buster" )
-  elif [ "${dolibarrMajor}" = "14" ]; then
-    php_base_images=( "7.4-apache-buster" )
-  elif [ "${dolibarrMajor}" = "15" ]; then
-    php_base_images=( "7.4-apache-buster" )
+  if [ "${dolibarrMajor}" = "16" ]; then
+    php_base_images=( "8.1-apache-buster" )
   else
     php_base_images=( "7.4-apache-buster" )
   fi
@@ -65,16 +53,8 @@ for dolibarrVersion in "${DOLIBARR_VERSIONS[@]}"; do
 
     dir="${BASE_DIR}/images/${currentTag}"
 
-    if [ "${php_version}" = "7.4" ]; then
-      gd_config_args="\-\-with\-freetype\ \-\-with\-jpeg"
-    else
-      gd_config_args="\-\-with\-png\-dir=\/usr\ \-\-with-jpeg-dir=\/usr"
-    fi
-
     mkdir -p "${dir}"
-    sed 's/%PHP_BASE_IMAGE%/'"${php_base_image}"'/;' "${BASE_DIR}/Dockerfile.template" | \
-    sed 's/%DOLI_VERSION%/'"${dolibarrVersion}"'/;' | \
-    sed 's/%GD_CONFIG_ARG%/'"${gd_config_args}"'/;' \
+    sed 's/%PHP_BASE_IMAGE%/'"${php_base_image}"'/;' "${BASE_DIR}/Dockerfile.template" \
     > "${dir}/Dockerfile"
 
     cp "${BASE_DIR}/docker-run.sh" "${dir}/docker-run.sh"
@@ -85,11 +65,14 @@ for dolibarrVersion in "${DOLIBARR_VERSIONS[@]}"; do
           --push \
           --compress \
           --platform linux/arm/v7,linux/arm64,linux/amd64 \
+          --build-arg DOLI_VERSION=${dolibarrVersion} \
           ${buildOptionTags} \
           "${dir}"
       else
-        docker build \
+        docker buildx build \
           --compress \
+          --platform linux/arm/v7,linux/arm64,linux/amd64 \
+          --build-arg DOLI_VERSION=${dolibarrVersion} \
           ${buildOptionTags} \
           "${dir}"
       fi
