@@ -1,4 +1,6 @@
-FROM php:8.1-apache-buster
+ARG PHP_BASE_IMAGE
+
+FROM php:${PHP_BASE_IMAGE}
 
 LABEL maintainer="Garcia MICHEL <garcia@soamichel.fr>"
 
