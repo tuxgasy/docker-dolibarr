@@ -4,6 +4,7 @@ set -e
 
 DOCKER_BUILD=${DOCKER_BUILD:-0}
 DOCKER_PUSH=${DOCKER_PUSH:-0}
+DOCKER_BUILD_MULTI_ARCH=${DOCKER_BUILD_MULTI_ARCH:-${DOCKER_PUSH}}
 
 BASE_DIR="$( cd "$(dirname "$0")" && pwd )"
 
@@ -11,30 +12,14 @@ source "${BASE_DIR}/versions.sh"
 
 tags=""
 
-rm -rf "${BASE_DIR}/images" "${BASE_DIR}/docker-compose-links"
-
-if [ "${DOCKER_BUILD}" = "1" ] && [ "${DOCKER_PUSH}" = "1" ]; then
-  docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-  docker buildx create --driver docker-container --use
-  docker buildx inspect --bootstrap
-fi
-
 for dolibarrVersion in "${DOLIBARR_VERSIONS[@]}"; do
-  echo "Generate Dockerfile for Dolibarr ${dolibarrVersion}"
-
   tags="${tags}\n\*"
   dolibarrMajor=$(echo ${dolibarrVersion} | cut -d. -f1)
 
   # Mapping version according https://wiki.dolibarr.org/index.php/Versions
   # Regarding PHP Supported version : https://www.php.net/supported-versions.php
-  if [ "${dolibarrMajor}" = "9" ]; then
-    php_base_images=( "7.3-apache-buster" )
-  elif [ "${dolibarrMajor}" = "10" ]; then
-    php_base_images=( "7.3-apache-buster" )
-  elif [ "${dolibarrMajor}" = "11" ]; then
-    php_base_images=( "7.4-apache-buster" )
-  elif [ "${dolibarrMajor}" = "12" ]; then
-    php_base_images=( "7.4-apache-buster" )
+  if [ "${dolibarrMajor}" = "16" ] || [ "${dolibarrVersion}" = "develop" ]; then
+    php_base_images=( "8.1-apache-buster" )
   else
     php_base_images=( "7.4-apache-buster" )
   fi
@@ -48,47 +33,9 @@ for dolibarrVersion in "${DOLIBARR_VERSIONS[@]}"; do
       currentTag="${dolibarrVersion}-php${php_version}"
       tags="${tags} ${currentTag}"
     fi
-
-    buildOptionTags="--tag tuxgasy/dolibarr:${currentTag}"
-    if [ "${dolibarrVersion}" != "develop" ]; then
-      buildOptionTags="${buildOptionTags} --tag tuxgasy/dolibarr:${dolibarrVersion} --tag tuxgasy/dolibarr:${dolibarrMajor}"
-    fi
-    if [ "${dolibarrVersion}" = "${DOLIBARR_LATEST_TAG}" ]; then
-      buildOptionTags="${buildOptionTags} --tag tuxgasy/dolibarr:latest"
-    fi
-
-    dir="${BASE_DIR}/images/${currentTag}"
-
-    if [ "${php_version}" = "7.4" ]; then
-      gd_config_args="\-\-with\-freetype\ \-\-with\-jpeg"
-    else
-      gd_config_args="\-\-with\-png\-dir=\/usr\ \-\-with-jpeg-dir=\/usr"
-    fi
-
-    mkdir -p "${dir}"
-    sed 's/%PHP_BASE_IMAGE%/'"${php_base_image}"'/;' "${BASE_DIR}/Dockerfile.template" | \
-    sed 's/%DOLI_VERSION%/'"${dolibarrVersion}"'/;' | \
-    sed 's/%GD_CONFIG_ARG%/'"${gd_config_args}"'/;' \
-    > "${dir}/Dockerfile"
-
-    cp "${BASE_DIR}/docker-run.sh" "${dir}/docker-run.sh"
-
-    if [ "${DOCKER_BUILD}" = "1" ]; then
-      if [ "${DOCKER_PUSH}" = "1" ]; then
-        docker buildx build \
-          --push \
-          --compress \
-          --platform linux/arm/v7,linux/arm64,linux/amd64 \
-          ${buildOptionTags} \
-          "${dir}"
-      else
-        docker build \
-          --compress \
-          ${buildOptionTags} \
-          "${dir}"
-      fi
-    fi
   done
+
+  /bin/bash ${BASE_DIR}/build.sh ${dolibarrVersion}
 
   if [ "${dolibarrVersion}" = "develop" ]; then
     tags="${tags} develop"
@@ -100,4 +47,5 @@ for dolibarrVersion in "${DOLIBARR_VERSIONS[@]}"; do
   fi
 done
 
+echo "Generate Readme file ..."
 sed 's/%TAGS%/'"${tags}"'/' "${BASE_DIR}/README.template" > "${BASE_DIR}/README.md"
