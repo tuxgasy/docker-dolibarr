@@ -19,9 +19,7 @@ jobs:
       env:
         - DOLI_INSTALL_AUTO=0
       before_install:
-        - ./update.sh
-        ## To update this command part
-        - docker build -t tuxgasy/dolibarr:develop --build-arg DOLI_VERSION=develop images/develop
+        - DOCKER_BUILD=1 ./build.sh develop
         - docker run -d -p 127.0.0.1:80:80 --name dolibarr tuxgasy/dolibarr:develop
       script:
         - docker ps | grep -q dolibarr
