@@ -5,9 +5,9 @@ Docker image for Dolibarr with auto installer on first boot.
 ## Supported tags
 %TAGS%
 
-**End of support for PHP < 7.3**
+**End of support for PHP < 7.4**
 
-**Dolibarr versions 7, 8 no more updated**
+**Dolibarr versions 7, 8, 9, 10 no more updated**
 
 ## Supported architectures
 
