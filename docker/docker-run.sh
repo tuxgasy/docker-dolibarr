@@ -81,13 +81,13 @@ EOF
 
   echo "[INIT] => update ownership for file in Dolibarr Config ..."
   chown www-data:www-data /var/www/html/conf/conf.php
-  if [[ ${DOLI_DB_TYPE} == "pgsql" && ! -f /var/www/documents/install.lock ]]; then
+  if [[ "${DOLI_DB_TYPE}" == "pgsql" && ! -f /var/www/documents/install.lock ]]; then
     chmod 600 /var/www/html/conf/conf.php
   else
     chmod 400 /var/www/html/conf/conf.php
   fi
 
-  if [[ ${CURRENT_UID} -ne ${WWW_USER_ID} || ${CURRENT_GID} -ne ${WWW_GROUP_ID} ]]; then
+  if [[ "${CURRENT_UID}" != "${WWW_USER_ID}" || "${CURRENT_GID}" != "${WWW_GROUP_ID}" ]]; then
     # Refresh file ownership cause it has changed
     echo "[INIT] => As UID / GID have changed from default, update ownership for files in /var/ww ..."
     chown -R www-data:www-data /var/www
@@ -102,10 +102,10 @@ function waitForDataBase()
 {
   r=1
 
-  while [[ ${r} -ne 0 ]]; do
+  while [[ ${r} != 0 ]]; do
     mysql -u ${DOLI_DB_USER} --protocol tcp -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} -P ${DOLI_DB_HOST_PORT} --connect-timeout=5 -e "status" > /dev/null 2>&1
-    r=$?
-    if [[ ${r} -ne 0 ]]; then
+    r=${?}
+    if [[ ${r} != 0 ]]; then
       echo "Waiting that SQL database is up ..."
       sleep 2
     fi
@@ -122,34 +122,34 @@ function lockInstallation()
 function initializeDatabase()
 {
   for fileSQL in /var/www/html/install/mysql/tables/*.sql; do
-    if [[ ${fileSQL} != *.key.sql ]]; then
-      echo "Importing table from `basename ${fileSQL}` ..."
+    if [[ "${fileSQL}" != *.key.sql ]]; then
+      echo "Importing table from $(basename ${fileSQL}) ..."
       sed -i 's/--.*//g;' ${fileSQL} # remove all comment
       mysql -u ${DOLI_DB_USER} -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} -P ${DOLI_DB_HOST_PORT} ${DOLI_DB_NAME} < ${fileSQL}
     fi
   done
 
   for fileSQL in /var/www/html/install/mysql/tables/*.key.sql; do
-    echo "Importing table key from `basename ${fileSQL}` ..."
+    echo "Importing table key from $(basename ${fileSQL}) ..."
     sed -i 's/--.*//g;' ${fileSQL}
     mysql -u ${DOLI_DB_USER} -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} -P ${DOLI_DB_HOST_PORT} ${DOLI_DB_NAME} < ${fileSQL} > /dev/null 2>&1
   done
 
   for fileSQL in /var/www/html/install/mysql/functions/*.sql; do
-    echo "Importing `basename ${fileSQL}` ..."
+    echo "Importing $(basename ${fileSQL}) ..."
     sed -i 's/--.*//g;' ${fileSQL}
     mysql -u ${DOLI_DB_USER} -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} -P ${DOLI_DB_HOST_PORT} ${DOLI_DB_NAME} < ${fileSQL} > /dev/null 2>&1
   done
 
   for fileSQL in /var/www/html/install/mysql/data/*.sql; do
-    echo "Importing data from `basename ${fileSQL}` ..."
+    echo "Importing data from $(basename "${fileSQL}") ..."
     sed -i 's/--.*//g;' ${fileSQL}
     mysql -u ${DOLI_DB_USER} -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} -P ${DOLI_DB_HOST_PORT} ${DOLI_DB_NAME} < ${fileSQL} > /dev/null 2>&1
   done
 
   echo "Create SuperAdmin account ..."
-  pass_crypted=`echo -n ${DOLI_ADMIN_PASSWORD} | md5sum | awk '{print $1}'`
-  mysql -u ${DOLI_DB_USER} -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} -P ${DOLI_DB_HOST_PORT} ${DOLI_DB_NAME} -e "INSERT INTO llx_user (entity, login, pass_crypted, lastname, admin, statut) VALUES (0, '${DOLI_ADMIN_LOGIN}', '${pass_crypted}', 'SuperAdmin', 1, 1);" > /dev/null 2>&1
+  pass_encrypted=$(echo -n ${DOLI_ADMIN_PASSWORD} | md5sum | awk '{print $1}')
+  mysql -u ${DOLI_DB_USER} -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} -P ${DOLI_DB_HOST_PORT} ${DOLI_DB_NAME} -e "INSERT INTO llx_user (entity, login, pass_crypted, lastname, admin, statut) VALUES (0, '${DOLI_ADMIN_LOGIN}', '${pass_encrypted}', 'SuperAdmin', 1, 1);" > /dev/null 2>&1
 
   echo "Set some default const ..."
   mysql -u ${DOLI_DB_USER} -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} -P ${DOLI_DB_HOST_PORT} ${DOLI_DB_NAME} -e "DELETE FROM llx_const WHERE name='MAIN_VERSION_LAST_INSTALL';" > /dev/null 2>&1
@@ -168,7 +168,7 @@ function migrateDatabase()
 
   mysqldump -u ${DOLI_DB_USER} -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} -P ${DOLI_DB_HOST_PORT} ${DOLI_DB_NAME} > /var/www/documents/dump.sql
   r=${?}
-  if [[ ${r} -ne 0 ]]; then
+  if [[ ${r} != 0 ]]; then
     echo "Dump failed ... Aborting migration ..."
     return ${r}
   fi
@@ -179,10 +179,10 @@ function migrateDatabase()
   php upgrade.php ${INSTALLED_VERSION} ${TARGET_VERSION} >> /var/www/documents/migration_error.html 2>&1 && \
   php upgrade2.php ${INSTALLED_VERSION} ${TARGET_VERSION} >> /var/www/documents/migration_error.html 2>&1 && \
   php step5.php ${INSTALLED_VERSION} ${TARGET_VERSION} >> /var/www/documents/migration_error.html 2>&1
-  r=$?
+  r=${?}
   popd > /dev/null
 
-  if [[ ${r} -ne 0 ]]; then
+  if [[ ${r} != 0 ]]; then
     echo "Migration failed ... Restoring DB ... check file /var/www/documents/migration_error.html for more info on error ..."
     mysql -u ${DOLI_DB_USER} -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} -P ${DOLI_DB_HOST_PORT} ${DOLI_DB_NAME} < /var/www/documents/dump.sql
     echo "DB Restored ..."
@@ -199,15 +199,15 @@ function run()
   initDolibarr
   echo "Current Version is : ${DOLI_VERSION}"
 
-  if [[ ${DOLI_INSTALL_AUTO} -eq 1 && ${DOLI_CRON} -ne 1 && ! -f /var/www/documents/install.lock && ${DOLI_DB_TYPE} != "pgsql" ]]; then
+  if [[ "${DOLI_INSTALL_AUTO}" == "1" && "${DOLI_CRON}" != "1" && ! -f /var/www/documents/install.lock && "${DOLI_DB_TYPE}" != "pgsql" ]]; then
     waitForDataBase
 
     mysql -u ${DOLI_DB_USER} -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} -P ${DOLI_DB_HOST_PORT} ${DOLI_DB_NAME} -e "SELECT Q.LAST_INSTALLED_VERSION FROM (SELECT INET_ATON(CONCAT(value, REPEAT('.0', 3 - CHAR_LENGTH(value) + CHAR_LENGTH(REPLACE(value, '.', ''))))) as VERSION_ATON, value as LAST_INSTALLED_VERSION FROM llx_const WHERE name IN ('MAIN_VERSION_LAST_INSTALL', 'MAIN_VERSION_LAST_UPGRADE') and entity=0) Q ORDER BY VERSION_ATON DESC LIMIT 1" > /tmp/lastinstall.result 2>&1
-    r=$?
-    if [[ ${r} -ne 0 ]]; then
+    r=${?}
+    if [[ ${r} != 0 ]]; then
       initializeDatabase
     else
-      INSTALLED_VERSION=`grep -v LAST_INSTALLED_VERSION /tmp/lastinstall.result`
+      INSTALLED_VERSION=$(grep -v LAST_INSTALLED_VERSION /tmp/lastinstall.result)
       echo "Last installed Version is : ${INSTALLED_VERSION}"
       if [[ "$(echo ${INSTALLED_VERSION} | cut -d. -f1)" -lt "$(echo ${DOLI_VERSION} | cut -d. -f1)" ]]; then
         migrateDatabase
@@ -216,7 +216,7 @@ function run()
       fi
     fi
 
-    if [[ ${DOLI_VERSION} != "develop" ]]; then
+    if [[ "${DOLI_VERSION}" != "develop" ]]; then
       lockInstallation
     fi
   fi
@@ -231,15 +231,15 @@ run
 
 set -e
 
-if [[ ${DOLI_CRON} -eq 1 ]]; then
+if [[ "${DOLI_CRON}" == 1 ]]; then
     echo "PATH=\$PATH:/usr/local/bin" > /etc/cron.d/dolibarr
     echo "*/5 * * * * root /bin/su www-data -s /bin/sh -c '/var/www/scripts/cron/cron_run_jobs.php ${DOLI_CRON_KEY} ${DOLI_CRON_USER}' > /proc/1/fd/1 2> /proc/1/fd/2" >> /etc/cron.d/dolibarr
     cron -f
     exit 0
 fi
 
-if [ "${1#-}" != "$1" ]; then
-  set -- apache2-foreground "$@"
+if [ "${1#-}" != "${1}" ]; then
+  set -- apache2-foreground "${@}"
 fi
 
-exec "$@"
+exec "${@}"

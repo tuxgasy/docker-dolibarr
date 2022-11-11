@@ -2,7 +2,8 @@
 # a specific version of Dolibarr
 #
 # Before build, define the variable DOLI_VERSION as following:
-# $ export DOLI_VERSION=4.0.4
+# $ export DOLI_VERSION=15.0.3
+# $ export PHP_BASE_IMAGE=7.4-apache-buster
 # And then, you can run :
 # $ docker-compose up
 #
@@ -38,8 +39,11 @@ services:
 
     cron:
         build:
-            context: ./docker-compose-links/${DOLI_VERSION}${PHP_VERSION}
-        image: tuxgasy/dolibarr:${DOLI_VERSION}${PHP_VERSION}
+            context: ./docker/
+            args:
+                DOLI_VERSION: ${DOLI_VERSION}
+                PHP_BASE_IMAGE: ${PHP_BASE_IMAGE}
+        image: tuxgasy/dolibarr:${DOLI_VERSION}${PHP_BASE_IMAGE}
         secrets:
             - mysql-user
             - mysql-password
@@ -61,8 +65,11 @@ services:
 
     web:
         build:
-            context: ./docker-compose-links/${DOLI_VERSION}${PHP_VERSION}
-        image: tuxgasy/dolibarr:${DOLI_VERSION}${PHP_VERSION}
+            context: ./docker/
+            args:
+                DOLI_VERSION: ${DOLI_VERSION}
+                PHP_BASE_IMAGE: ${PHP_BASE_IMAGE}
+        image: tuxgasy/dolibarr:${DOLI_VERSION}${PHP_BASE_VERSION}
         secrets:
             - mysql-user
             - mysql-password

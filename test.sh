@@ -7,22 +7,6 @@ BASE_DIR="$( cd "$(dirname "$0")" && pwd )"
 DOLI_VER=${1}
 PHP_VER=${2:-""}
 
-rm -rf "${BASE_DIR}/docker-compose-links/" && mkdir "${BASE_DIR}/docker-compose-links"
-
-# shellcheck disable=SC2044
-for directory in $(find "${BASE_DIR}/images" -maxdepth 1 -mindepth 1 -type d -printf '%f\n'); do
-  dolibarrVersion=$(echo "${directory}" | cut -d\- -f1)
-  phpVersion=$(echo "${directory}" | cut -d\- -f2)
-
-  #dolibarrMajor=$(echo "${dolibarrVersion}" | cut -d. -f1)
-  phpMajor=$(echo "${phpVersion}" | cut -d. -f1)
-
-  ln -nfs "${BASE_DIR}/images/${directory}" "${BASE_DIR}/docker-compose-links/${directory}"
-  if [ "${phpMajor}" = "php7" ]; then
-    ln -nfs "${BASE_DIR}/images/${directory}" "${BASE_DIR}/docker-compose-links/${dolibarrVersion}"
-  fi
-done
-
 echo "Testing for:"
 echo " - Dolibarr ${DOLI_VER}"
 if [ "${PHP_VER}" = "" ]; then
