@@ -37,6 +37,7 @@ services:
       MYSQL_DATABASE: "dolibarr"
       MYSQL_USER: "dolibarr"
       MYSQL_PASSWORD: "mysupersecretpasswordfordatabase"
+      MYSQL_ROOT_PASSWORD: "mysupersupersecretpasswordforrootuser"
     volumes:
       - mysql-data:/var/lib/mysql
     networks:
