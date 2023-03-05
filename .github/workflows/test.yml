@@ -14,7 +14,7 @@ jobs:
                 ./update.sh
                 git diff --exit-code
 
-    test-run:
+    check-build:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
