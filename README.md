@@ -9,7 +9,8 @@ Docker image for Dolibarr with auto installer on first boot.
 * 13.0.4-php7.4 13.0.4 13
 * 14.0.5-php7.4 14.0.5 14
 * 15.0.3-php7.4 15.0.3 15
-* 16.0.4-php8.1 16.0.4 16 latest
+* 16.0.4-php8.1 16.0.4 16
+* 17.0.0-php8.1 17.0.0 17 latest
 * develop
 
 **End of support for PHP < 7.4**
