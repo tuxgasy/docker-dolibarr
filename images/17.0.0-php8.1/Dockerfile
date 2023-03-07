@@ -35,6 +35,12 @@ ENV WWW_GROUP_ID 33
 ENV PHP_INI_DATE_TIMEZONE 'UTC'
 ENV PHP_INI_MEMORY_LIMIT 256M
 
+RUN sed -i \
+  -e 's/^\(ServerSignature On\)$/#\1/g' \
+  -e 's/^#\(ServerSignature Off\)$/\1/g' \
+  -e 's/^\(ServerTokens\) OS$/\1 Prod/g' \
+  /etc/apache2/conf-available/security.conf
+
 RUN apt-get update -y \
     && apt-get dist-upgrade -y \
     && apt-get install -y --no-install-recommends \
