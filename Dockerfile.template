@@ -37,6 +37,12 @@ ENV PHP_INI_MEMORY_LIMIT 256M
 ENV PHP_INI_UPLOAD_MAX_FILESIZE 2M
 ENV PHP_INI_POST_MAX_SIZE 8M
 
+RUN sed -i \
+  -e 's/^\(ServerSignature On\)$/#\1/g' \
+  -e 's/^#\(ServerSignature Off\)$/\1/g' \
+  -e 's/^\(ServerTokens\) OS$/\1 Prod/g' \
+  /etc/apache2/conf-available/security.conf
+
 RUN apt-get update -y \
     && apt-get dist-upgrade -y \
     && apt-get install -y --no-install-recommends \
