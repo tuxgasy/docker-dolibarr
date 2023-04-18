@@ -1,9 +1,10 @@
 ARG ARCH=
 
-FROM ${ARCH}php:7.4-apache-buster
+FROM ${ARCH}php:8.1-apache-buster
 
 LABEL maintainer="Garcia MICHEL <garcia@soamichel.fr>"
 
+ENV DOLI_VERSION develop
 ENV DOLI_INSTALL_AUTO 1
 
 ENV DOLI_DB_TYPE mysqli
@@ -33,6 +34,8 @@ ENV WWW_GROUP_ID 33
 
 ENV PHP_INI_DATE_TIMEZONE 'UTC'
 ENV PHP_INI_MEMORY_LIMIT 256M
+ENV PHP_INI_UPLOAD_MAX_FILESIZE 2M
+ENV PHP_INI_POST_MAX_SIZE 8M
 
 RUN apt-get update -y \
     && apt-get dist-upgrade -y \
@@ -58,9 +61,8 @@ RUN apt-get update -y \
     && docker-php-ext-install -j$(nproc) ldap \
     && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
     && docker-php-ext-install imap \
-    && mv ${PHP_INI_DIR}/php.ini-production ${PHP_INI_DIR}/php.ini
-
-ENV DOLI_VERSION develop
+    && mv ${PHP_INI_DIR}/php.ini-production ${PHP_INI_DIR}/php.ini \
+    && rm -rf /var/lib/apt/lists/*
 
 # Get Dolibarr
 RUN curl -fLSs https://github.com/Dolibarr/dolibarr/archive/${DOLI_VERSION}.tar.gz |\
@@ -72,8 +74,6 @@ RUN curl -fLSs https://github.com/Dolibarr/dolibarr/archive/${DOLI_VERSION}.tar.
     mkdir -p /var/www/documents && \
     mkdir -p /var/www/html/custom && \
     chown -R www-data:www-data /var/www
-
-RUN rm -rf /var/lib/apt/lists/*
 
 EXPOSE 80
 VOLUME /var/www/documents

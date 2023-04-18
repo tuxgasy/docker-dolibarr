@@ -42,6 +42,8 @@ function initDolibarr()
 date.timezone = ${PHP_INI_DATE_TIMEZONE}
 sendmail_path = /usr/sbin/sendmail -t -i
 memory_limit = ${PHP_INI_MEMORY_LIMIT}
+upload_max_filesize = ${PHP_INI_UPLOAD_MAX_FILESIZE}
+post_max_size = ${PHP_INI_POST_MAX_SIZE}
 EOF
 
 if [[ ! -f /var/www/html/conf/conf.php ]]; then
@@ -233,7 +235,7 @@ set -e
 
 if [[ ${DOLI_CRON} -eq 1 ]]; then
     echo "PATH=\$PATH:/usr/local/bin" > /etc/cron.d/dolibarr
-    echo "*/5 * * * * www-data /var/www/scripts/cron/cron_run_jobs.php ${DOLI_CRON_KEY} ${DOLI_CRON_USER} > /var/www/documents/cron_run_jobs.php.log 2>&1" >> /etc/cron.d/dolibarr
+    echo "*/5 * * * * root /bin/su www-data -s /bin/sh -c '/var/www/scripts/cron/cron_run_jobs.php ${DOLI_CRON_KEY} ${DOLI_CRON_USER}' > /proc/1/fd/1 2> /proc/1/fd/2" >> /etc/cron.d/dolibarr
     cron -f
     exit 0
 fi

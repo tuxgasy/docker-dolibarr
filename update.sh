@@ -27,14 +27,8 @@ for dolibarrVersion in "${DOLIBARR_VERSIONS[@]}"; do
 
   # Mapping version according https://wiki.dolibarr.org/index.php/Versions
   # Regarding PHP Supported version : https://www.php.net/supported-versions.php
-  if [ "${dolibarrMajor}" = "9" ]; then
-    php_base_images=( "7.3-apache-buster" )
-  elif [ "${dolibarrMajor}" = "10" ]; then
-    php_base_images=( "7.3-apache-buster" )
-  elif [ "${dolibarrMajor}" = "11" ]; then
-    php_base_images=( "7.4-apache-buster" )
-  elif [ "${dolibarrMajor}" = "12" ]; then
-    php_base_images=( "7.4-apache-buster" )
+  if [ "${dolibarrVersion}" = "develop" ] || [ "${dolibarrMajor}" -ge "16" ]; then
+    php_base_images=( "8.1-apache-buster" )
   else
     php_base_images=( "7.4-apache-buster" )
   fi
@@ -59,16 +53,9 @@ for dolibarrVersion in "${DOLIBARR_VERSIONS[@]}"; do
 
     dir="${BASE_DIR}/images/${currentTag}"
 
-    if [ "${php_version}" = "7.4" ]; then
-      gd_config_args="\-\-with\-freetype\ \-\-with\-jpeg"
-    else
-      gd_config_args="\-\-with\-png\-dir=\/usr\ \-\-with-jpeg-dir=\/usr"
-    fi
-
     mkdir -p "${dir}"
     sed 's/%PHP_BASE_IMAGE%/'"${php_base_image}"'/;' "${BASE_DIR}/Dockerfile.template" | \
-    sed 's/%DOLI_VERSION%/'"${dolibarrVersion}"'/;' | \
-    sed 's/%GD_CONFIG_ARG%/'"${gd_config_args}"'/;' \
+    sed 's/%DOLI_VERSION%/'"${dolibarrVersion}"'/;' \
     > "${dir}/Dockerfile"
 
     cp "${BASE_DIR}/docker-run.sh" "${dir}/docker-run.sh"
