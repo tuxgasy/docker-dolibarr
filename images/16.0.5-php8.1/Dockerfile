@@ -4,7 +4,7 @@ FROM ${ARCH}php:8.1-apache-buster
 
 LABEL maintainer="Garcia MICHEL <garcia@soamichel.fr>"
 
-ENV DOLI_VERSION 16.0.4
+ENV DOLI_VERSION 16.0.5
 ENV DOLI_INSTALL_AUTO 1
 
 ENV DOLI_DB_TYPE mysqli
@@ -34,6 +34,8 @@ ENV WWW_GROUP_ID 33
 
 ENV PHP_INI_DATE_TIMEZONE 'UTC'
 ENV PHP_INI_MEMORY_LIMIT 256M
+ENV PHP_INI_UPLOAD_MAX_FILESIZE 2M
+ENV PHP_INI_POST_MAX_SIZE 8M
 
 RUN sed -i \
   -e 's/^\(ServerSignature On\)$/#\1/g' \
