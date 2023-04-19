@@ -4,7 +4,7 @@ FROM ${ARCH}php:8.1-apache-buster
 
 LABEL maintainer="Garcia MICHEL <garcia@soamichel.fr>"
 
-ENV DOLI_VERSION 17.0.0
+ENV DOLI_VERSION 17.0.1
 ENV DOLI_INSTALL_AUTO 1
 
 ENV DOLI_DB_TYPE mysqli
@@ -36,6 +36,12 @@ ENV PHP_INI_DATE_TIMEZONE 'UTC'
 ENV PHP_INI_MEMORY_LIMIT 256M
 ENV PHP_INI_UPLOAD_MAX_FILESIZE 2M
 ENV PHP_INI_POST_MAX_SIZE 8M
+
+RUN sed -i \
+  -e 's/^\(ServerSignature On\)$/#\1/g' \
+  -e 's/^#\(ServerSignature Off\)$/\1/g' \
+  -e 's/^\(ServerTokens\) OS$/\1 Prod/g' \
+  /etc/apache2/conf-available/security.conf
 
 RUN apt-get update -y \
     && apt-get dist-upgrade -y \
