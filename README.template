@@ -119,7 +119,10 @@ When setup this way, to upgrade version the use of the web interface is mandator
 
 Some environment variables are compatible with docker secrets behaviour, just add the `_FILE` suffix to var name and point the value file to read.
 Environment variables that are compatible with docker secrets:
- - `DOLI_DB_USER` => `DOLI_DB_USER_FILE`
- - `DOLI_DB_PASSWORD` => `DOLI_DB_PASSWORD_FILE`
- - `DOLI_ADMIN_LOGIN` => `DOLI_ADMIN_LOGIN_FILE`
- - `DOLI_ADMIN_PASSWORD` => `DOLI_ADMIN_PASSWORD_FILE`
+
+* `DOLI_DB_USER` => `DOLI_DB_USER_FILE`
+* `DOLI_DB_PASSWORD` => `DOLI_DB_PASSWORD_FILE`
+* `DOLI_ADMIN_LOGIN` => `DOLI_ADMIN_LOGIN_FILE`
+* `DOLI_ADMIN_PASSWORD` => `DOLI_ADMIN_PASSWORD_FILE`
+* `DOLI_CRON_KEY` => `DOLI_CRON_KEY_FILE`
+* `DOLI_CRON_USER` => `DOLI_CRON_USER_FILE`
