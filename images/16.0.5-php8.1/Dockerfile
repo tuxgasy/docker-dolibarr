@@ -85,6 +85,7 @@ EXPOSE 80
 VOLUME /var/www/documents
 VOLUME /var/www/html/custom
 
+COPY docker-init.php /var/www/scripts/
 COPY docker-run.sh /usr/local/bin/
 ENTRYPOINT ["docker-run.sh"]
 
