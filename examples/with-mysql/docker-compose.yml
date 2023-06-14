@@ -32,7 +32,7 @@ services:
       - external-pod
 
   mysql:
-    image: library/mariadb:latest
+    image: mysql:latest
     environment:
       MYSQL_DATABASE: "dolibarr"
       MYSQL_USER: "dolibarr"
