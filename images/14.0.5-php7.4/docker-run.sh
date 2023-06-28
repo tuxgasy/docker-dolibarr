@@ -44,6 +44,9 @@ sendmail_path = /usr/sbin/sendmail -t -i
 memory_limit = ${PHP_INI_MEMORY_LIMIT}
 upload_max_filesize = ${PHP_INI_UPLOAD_MAX_FILESIZE}
 post_max_size = ${PHP_INI_POST_MAX_SIZE}
+allow_url_fopen = 0
+session.use_strict_mode = 1
+disable_functions = pcntl_alarm,pcntl_fork,pcntl_waitpid,pcntl_wait,pcntl_wifexited,pcntl_wifstopped,pcntl_wifsignaled,pcntl_wifcontinued,pcntl_wexitstatus,pcntl_wtermsig,pcntl_wstopsig,pcntl_signal,pcntl_signal_get_handler,pcntl_signal_dispatch,pcntl_get_last_error,pcntl_strerror,pcntl_sigprocmask,pcntl_sigwaitinfo,pcntl_sigtimedwait,pcntl_exec,pcntl_getpriority,pcntl_setpriority,pcntl_async_signals,passthru,shell_exec,system,proc_open,popen
 EOF
 
 if [[ ! -f /var/www/html/conf/conf.php ]]; then
@@ -63,6 +66,7 @@ if [[ ! -f /var/www/html/conf/conf.php ]]; then
 \$dolibarr_main_db_pass='${DOLI_DB_PASSWORD}';
 \$dolibarr_main_db_type='${DOLI_DB_TYPE}';
 \$dolibarr_main_authentication='${DOLI_AUTH}';
+\$dolibarr_main_prod=1;
 EOF
     if [[ ${DOLI_AUTH} =~ .*ldap.* ]]; then
       echo "[INIT] => update Dolibarr Config with LDAP entries ..."
