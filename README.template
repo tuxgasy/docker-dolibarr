@@ -87,6 +87,7 @@ When setup this way, to upgrade version the use of the web interface is mandator
 | Variable                        | Default value                  | Description |
 | ------------------------------- | ------------------------------ | ----------- |
 | **DOLI_INSTALL_AUTO**           | *1*                            | 1: The installation will be executed on first boot
+| **DOLI_PROD**                   | *1*                            | 1: Dolibarr will be run in production mode
 | **DOLI_DB_TYPE**                | *mysqli*                       | Type of the DB server (**mysqli**, pgsql)
 | **DOLI_DB_HOST**                | *mysql*                        | Host name of the MariaDB/MySQL server
 | **DOLI_DB_HOST_PORT**           | *3306*                         | Host port of the MariaDB/MySQL server
