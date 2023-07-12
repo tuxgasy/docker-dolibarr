@@ -101,6 +101,7 @@ When setup this way, to upgrade version the use of the web interface is mandator
 | **PHP_INI_MEMORY_LIMIT**        | *256M*                         | PHP Memory limit
 | **PHP_INI_UPLOAD_MAX_FILESIZE** | *2M*                           | PHP Maximum allowed size for uploaded files
 | **PHP_INI_POST_MAX_SIZE**       | *8M*                           | PHP Maximum size of POST data that PHP will accept.
+| **PHP_INI_ALLOW_URL_FOPEN**     | *0*                            | Allow URL-aware fopen wrappers
 | **WWW_USER_ID**                 |                                | ID of user www-data. ID will not changed if leave empty. During a development, it is very practical to put the same ID as the host user.
 | **WWW_GROUP_ID**                |                                | ID of group www-data. ID will not changed if leave empty.
 | **DOLI_AUTH**                   | *dolibarr*                     | Which method is used to connect users, change to `ldap` or `ldap, dolibarr` to use LDAP
