@@ -68,6 +68,10 @@ if [[ ! -f /var/www/html/conf/conf.php ]]; then
 \$dolibarr_main_authentication='${DOLI_AUTH}';
 \$dolibarr_main_prod=${DOLI_PROD};
 EOF
+    if [[ ! -z ${DOLI_INSTANCE_UNIQUE_ID} ]]; then
+      echo "[INIT] => update Dolibarr Config with instance unique id ..."
+      cat >> /var/www/html/conf/conf.php << "\$dolibarr_main_instance_unique_id='${DOLI_INSTANCE_UNIQUE_ID}';"
+    fi
     if [[ ${DOLI_AUTH} =~ .*ldap.* ]]; then
       echo "[INIT] => update Dolibarr Config with LDAP entries ..."
       cat >> /var/www/html/conf/conf.php << EOF
@@ -237,6 +241,7 @@ DOLI_ADMIN_LOGIN=$(get_env_value 'DOLI_ADMIN_LOGIN' 'admin')
 DOLI_ADMIN_PASSWORD=$(get_env_value 'DOLI_ADMIN_PASSWORD' 'admin')
 DOLI_CRON_KEY=$(get_env_value 'DOLI_CRON_KEY' '')
 DOLI_CRON_USER=$(get_env_value 'DOLI_CRON_USER' '')
+DOLI_INSTANCE_UNIQUE_ID=$(get_env_value 'DOLI_INSTANCE_UNIQUE_ID' '')
 
 run
 
