@@ -127,6 +127,7 @@ When setup this way, to upgrade version the use of the web interface is mandator
 | **DOLI_CRON**                   | *0*                            | 1: Enable cron service
 | **DOLI_CRON_KEY**               |                                | Security key launch cron jobs
 | **DOLI_CRON_USER**              |                                | Dolibarr user used for cron jobs
+| **DOLI_INSTANCE_UNIQUE_ID**     |                                | Secret ID used as a salt / key for some encryption. By default, it is set randomly when the docker container is created.
 
 Some environment variables are compatible with docker secrets behaviour, just add the `_FILE` suffix to var name and point the value file to read.
 Environment variables that are compatible with docker secrets:
@@ -137,3 +138,4 @@ Environment variables that are compatible with docker secrets:
 * `DOLI_ADMIN_PASSWORD` => `DOLI_ADMIN_PASSWORD_FILE`
 * `DOLI_CRON_KEY` => `DOLI_CRON_KEY_FILE`
 * `DOLI_CRON_USER` => `DOLI_CRON_USER_FILE`
+* `DOLI_INSTANCE_UNIQUE_ID` => `DOLI_INSTANCE_UNIQUE_ID_FILE`
