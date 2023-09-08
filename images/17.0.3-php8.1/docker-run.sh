@@ -70,7 +70,7 @@ if [[ ! -f /var/www/html/conf/conf.php ]]; then
 EOF
     if [[ ! -z ${DOLI_INSTANCE_UNIQUE_ID} ]]; then
       echo "[INIT] => update Dolibarr Config with instance unique id ..."
-      cat >> /var/www/html/conf/conf.php << "\$dolibarr_main_instance_unique_id='${DOLI_INSTANCE_UNIQUE_ID}';"
+      echo "\$dolibarr_main_instance_unique_id='${DOLI_INSTANCE_UNIQUE_ID}';" >> /var/www/html/conf/conf.php
     fi
     if [[ ${DOLI_AUTH} =~ .*ldap.* ]]; then
       echo "[INIT] => update Dolibarr Config with LDAP entries ..."

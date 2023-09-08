@@ -47,6 +47,7 @@ services:
             DOLI_CRON: 1
             DOLI_CRON_KEY: xxxx
             DOLI_CRON_USER: administrator
+            DOLI_INSTANCE_UNIQUE_ID: xxxx
             DOLI_DB_USER_FILE: /run/secrets/mysql-user
             DOLI_DB_PASSWORD_FILE: /run/secrets/mysql-password
             DOLI_ADMIN_LOGIN: administrator
