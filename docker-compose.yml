@@ -72,6 +72,7 @@ services:
         depends_on:
             - mariadb
         environment:
+            DOLI_INSTANCE_UNIQUE_ID: xxxx
             DOLI_DB_USER_FILE: "/run/secrets/mysql-user"
             DOLI_DB_PASSWORD_FILE: "/run/secrets/mysql-password"
             DOLI_ADMIN_LOGIN: "administrator"
