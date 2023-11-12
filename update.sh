@@ -58,8 +58,8 @@ for dolibarrVersion in "${DOLIBARR_VERSIONS[@]}"; do
     sed 's/%DOLI_VERSION%/'"${dolibarrVersion}"'/;' \
     > "${dir}/Dockerfile"
 
-    cp "${BASE_DIR}/docker-init.php" "${dir}/docker-init.php"
-    cp "${BASE_DIR}/docker-run.sh" "${dir}/docker-run.sh"
+    cp -a "${BASE_DIR}/docker-init.php" "${dir}/docker-init.php"
+    cp -a "${BASE_DIR}/docker-run.sh" "${dir}/docker-run.sh"
 
     if [ "${DOCKER_BUILD}" = "1" ]; then
       if [ "${DOCKER_PUSH}" = "1" ]; then
