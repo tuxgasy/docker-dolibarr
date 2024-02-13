@@ -27,7 +27,9 @@ for dolibarrVersion in "${DOLIBARR_VERSIONS[@]}"; do
 
   # Mapping version according https://wiki.dolibarr.org/index.php/Versions
   # Regarding PHP Supported version : https://www.php.net/supported-versions.php
-  if [ "${dolibarrVersion}" = "develop" ] || [ "${dolibarrMajor}" -ge "16" ]; then
+  if [ "${dolibarrVersion}" = "develop" ] || [ "${dolibarrMajor}" -ge "19" ]; then
+    php_base_images=( "8.2-apache-buster" )
+  elif [ "${dolibarrMajor}" -ge "16" ]; then
     php_base_images=( "8.1-apache-buster" )
   else
     php_base_images=( "7.4-apache-buster" )
