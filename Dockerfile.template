@@ -80,8 +80,12 @@ RUN curl -fLSs https://github.com/Dolibarr/dolibarr/archive/${DOLI_VERSION}.tar.
     cp -r /tmp/dolibarr-${DOLI_VERSION}/scripts /var/www/ && \
     rm -rf /tmp/* && \
     mkdir -p /var/www/documents && \
+    chmod -R 655 /var/www/documents && \
     mkdir -p /var/www/html/custom && \
-    chown -R www-data:www-data /var/www
+    chown -R www-data:www-data /var/www && \
+    chmod -R 444 /var/www/html/* && \
+    chmod 775 /var/www/html && \
+    find /var/www/html/* -type d -exec chmod 555 {} \;
 
 EXPOSE 80
 VOLUME /var/www/documents
