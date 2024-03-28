@@ -171,6 +171,9 @@ function initializeDatabase()
 
   echo "Enable user module ..."
   php /var/www/scripts/docker-init.php
+
+  # Update ownership after initialisation of modules
+  chown -R www-data:www-data /var/www/documents
 }
 
 function migrateDatabase()
