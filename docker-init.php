@@ -2,8 +2,6 @@
 <?php
 require_once '../htdocs/master.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-// Remove buffering to send logs to docker
-while (ob_get_level()) { ob_end_flush(); }
 
 printf("Activating module User... ");
 activateModule('modUser');
