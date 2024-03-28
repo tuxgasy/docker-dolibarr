@@ -103,6 +103,7 @@ When setup this way, to upgrade version the use of the web interface is mandator
 | **DOLI_ADMIN_LOGIN**            | *admin*                        | Admin's login create on the first boot
 | **DOLI_ADMIN_PASSWORD**         | *admin*                        | Admin'password
 | **DOLI_URL_ROOT**               | *http://localhost*             | Url root of the Dolibarr installation
+| **DOLI_ENABLE_MODULES**         |                                | Comma-separated list of modules to be activated at install. modUser will always be activated. (Ex: `Societe,Facture,Stock`)
 | **PHP_INI_DATE_TIMEZONE**       | *UTC*                          | Default timezone on PHP
 | **PHP_INI_MEMORY_LIMIT**        | *256M*                         | PHP Memory limit
 | **PHP_INI_UPLOAD_MAX_FILESIZE** | *2M*                           | PHP Maximum allowed size for uploaded files
