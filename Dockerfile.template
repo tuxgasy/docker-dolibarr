@@ -60,6 +60,8 @@ RUN apt-get update -y \
         default-mysql-client \
         postgresql-client \
         cron \
+        libmagickwand-dev \
+        ghostscript \
     && apt-get autoremove -y \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) calendar intl mysqli pdo_mysql gd soap zip \
@@ -71,6 +73,15 @@ RUN apt-get update -y \
     && docker-php-ext-install imap \
     && mv ${PHP_INI_DIR}/php.ini-production ${PHP_INI_DIR}/php.ini \
     && rm -rf /var/lib/apt/lists/*
+
+# Install Imagick for expense report inline pdf preview
+RUN pecl install imagick
+RUN docker-php-ext-enable imagick
+
+# Set Imagick security policy to allow pdf conversion
+COPY update-imagemagick-policy.sh /usr/local/bin/update-imagemagick-policy.sh
+RUN chmod +x /usr/local/bin/update-imagemagick-policy.sh
+RUN /usr/local/bin/update-imagemagick-policy.sh
 
 # Get Dolibarr
 RUN curl -fLSs https://github.com/Dolibarr/dolibarr/archive/${DOLI_VERSION}.tar.gz |\
