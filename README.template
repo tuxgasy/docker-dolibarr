@@ -98,8 +98,8 @@ When setup this way, to upgrade version the use of the web interface is mandator
 | **DOLI_ADMIN_PASSWORD**         | *admin*                        | Admin'password
 | **DOLI_URL_ROOT**               | *http://localhost*             | Url root of the Dolibarr installation
 | **DOLI_ENABLE_MODULES**         |                                | Comma-separated list of modules to be activated at install. modUser will always be activated. (Ex: `Societe,Facture,Stock`)
-| **INIT_COMPANY_NAME**           |                                | Set the company name of Dolibarr at container init
-| **INIT_COMPANY_COUNTRYCODE**    |                                | Set the company and Dolibarr country at container init. Need 2-letter codes like "FR", "GB", "US",...
+| **DOLI_INIT_COMPANY_NAME**           |                                | Set the company name of Dolibarr at container init
+| **DOLI_INIT_COMPANY_COUNTRYCODE**    |                                | Set the company and Dolibarr country at container init. Need 2-letter codes like "FR", "GB", "US",...
 | **PHP_INI_DATE_TIMEZONE**       | *UTC*                          | Default timezone on PHP
 | **PHP_INI_MEMORY_LIMIT**        | *256M*                         | PHP Memory limit
 | **PHP_INI_UPLOAD_MAX_FILESIZE** | *2M*                           | PHP Maximum allowed size for uploaded files
