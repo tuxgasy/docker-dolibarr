@@ -25,10 +25,10 @@ if (!empty(getenv('DOLI_ENABLE_MODULES'))) {
   }
 }
 
-if (!empty(getenv('INIT_COMPANY_COUNTRYCODE'))) {
+if (!empty(getenv('DOLI_COMPANY_COUNTRYCODE'))) {
     require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
     require_once DOL_DOCUMENT_ROOT.'/core/class/ccountry.class.php';
-    $countryCode = getenv('INIT_COMPANY_COUNTRYCODE');
+    $countryCode = getenv('DOLI_COMPANY_COUNTRYCODE');
     $country = new Ccountry($db);
     $res = $country->fetch(0,$countryCode);
     if ($res > 0 ) {
@@ -43,8 +43,8 @@ if (!empty(getenv('INIT_COMPANY_COUNTRYCODE'))) {
     }
 }
 
-if (!empty(getenv('INIT_COMPANY_NAME'))) {
-    $compname = getenv('INIT_COMPANY_NAME');
+if (!empty(getenv('DOLI_COMPANY_NAME'))) {
+    $compname = getenv('DOLI_COMPANY_NAME');
     dolibarr_set_const($db, "MAIN_INFO_SOCIETE_NOM", $compname, 'chaine', 0, '', $conf->entity);
     $db->commit();
 }
