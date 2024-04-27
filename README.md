@@ -143,7 +143,7 @@ Environment variables that are compatible with docker secrets:
 ## Add post-deployment scripts
 It is possible to execute `*.sql` and `*.php` custom file at the end of deployment by mounting a volume with the following structure : 
 ```
-\volume
+\docker-init.d
 |-\sql
 | |- custom_script.sql
 |
@@ -172,7 +172,7 @@ services:
             DOLI_URL_ROOT: 'http://0.0.0.0'
             PHP_INI_DATE_TIMEZONE: 'Europe/Paris'
         volumes :
-          - volume-scripts:/var/www/scripts/docker-init
+          - volume-scripts:/var/www/scripts/docker-init.d
         ports:
             - "80:80"
         links:
@@ -182,6 +182,6 @@ services:
 or more specifically 
 ```
         volumes : 
-          - volume-scripts-sql:/var/www/scripts/docker-init/sql
-          - volume-scripts-php:/var/www/scripts/docker-init/php
+          - volume-scripts-sql:/var/www/scripts/docker-init.d/sql
+          - volume-scripts-php:/var/www/scripts/docker-init.d/php
 ```

@@ -174,12 +174,14 @@ function initializeDatabase()
 
   if [ -d /var/www/scripts/docker-init.d/sql ] ; then
     for fileSQL in /var/www/scripts/docker-init.d/sql/*.sql; do
+      [ ! -f $fileSQL ] && continue ;
       echo "Importing custom SQL from `basename ${fileSQL}` ..."
       sed -i 's/--.*//g;' ${fileSQL}
       mysql -u ${DOLI_DB_USER} -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} -P ${DOLI_DB_HOST_PORT} ${DOLI_DB_NAME} < ${fileSQL} > /dev/null 2>&1
     done
 
     for filePHP in /var/www/scripts/docker-init.d/php/*.php; do
+      [ ! -f $filePHP ] && continue ;
       echo "Executing custom PHP : `basename ${filePHP}` ..."
       php $filePHP
     done
