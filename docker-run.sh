@@ -172,6 +172,19 @@ function initializeDatabase()
   echo "Enable user module ..."
   php /var/www/scripts/docker-init.php
 
+  if [ -d /var/www/scripts/docker-init.d/sql ] ; then
+    for fileSQL in /var/www/scripts/docker-init.d/sql/*.sql; do
+      echo "Importing custom SQL from `basename ${fileSQL}` ..."
+      sed -i 's/--.*//g;' ${fileSQL}
+      mysql -u ${DOLI_DB_USER} -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} -P ${DOLI_DB_HOST_PORT} ${DOLI_DB_NAME} < ${fileSQL} > /dev/null 2>&1
+    done
+
+    for filePHP in /var/www/scripts/docker-init.d/php/*.php; do
+      echo "Executing custom PHP : `basename ${filePHP}` ..."
+      php $filePHP
+    done
+  fi
+
   # Update ownership after initialisation of modules
   chown -R www-data:www-data /var/www/documents
 }

@@ -139,3 +139,49 @@ Environment variables that are compatible with docker secrets:
 * `DOLI_CRON_KEY` => `DOLI_CRON_KEY_FILE`
 * `DOLI_CRON_USER` => `DOLI_CRON_USER_FILE`
 * `DOLI_INSTANCE_UNIQUE_ID` => `DOLI_INSTANCE_UNIQUE_ID_FILE`
+
+## Add post-deployment scripts
+It is possible to execute `*.sql` and `*.php` custom file at the end of deployment by mounting a volume with the following structure : 
+```
+\volume
+|-\sql
+| |- custom_script.sql
+|
+|-\php
+| |- custom_script.php
+```
+
+Mount the volume with compose file : 
+```yaml
+version: "3"
+
+services:
+    mariadb:
+        image: mariadb:latest
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: dolibarr
+
+    web:
+        image: tuxgasy/dolibarr
+        environment:
+            DOLI_DB_HOST: mariadb
+            DOLI_DB_USER: root
+            DOLI_DB_PASSWORD: root
+            DOLI_DB_NAME: dolibarr
+            DOLI_URL_ROOT: 'http://0.0.0.0'
+            PHP_INI_DATE_TIMEZONE: 'Europe/Paris'
+        volumes :
+          - volume-scripts:/var/www/scripts/docker-init
+        ports:
+            - "80:80"
+        links:
+            - mariadb
+```
+
+or more specifically 
+```
+        volumes : 
+          - volume-scripts-sql:/var/www/scripts/docker-init/sql
+          - volume-scripts-php:/var/www/scripts/docker-init/php
+```
