@@ -18,8 +18,7 @@ if (!empty(getenv('DOLI_ENABLE_MODULES'))) {
       printf("Activating module ".$mod." ...");
       activateModule('mod' . $mod);
       printf(" OK\n");
-    }
-    else {
+    } else {
       printf("Unable to find module : ".$modName."\n");
     }
   }
