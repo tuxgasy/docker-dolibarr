@@ -135,14 +135,12 @@ Environment variables that are compatible with docker secrets:
 * `DOLI_INSTANCE_UNIQUE_ID` => `DOLI_INSTANCE_UNIQUE_ID_FILE`
 
 ## Add post-deployment scripts
-It is possible to execute `*.sql` and `*.php` custom file at the end of deployment by mounting a volume with the following structure : 
+It is possible to execute `*.sh`, `*.sql` and/or `*.php` custom file at the end of deployment by mounting a volume in `/var/www/scripts/docker-init.d`
 ```
 \docker-init.d
-|-\sql
-| |- custom_script.sql
-|
-|-\php
-| |- custom_script.php
+|- custom_script.sql
+|- custom_script.php
+|- custom_script.sh
 ```
 
 Mount the volume with compose file : 
@@ -171,11 +169,4 @@ services:
             - "80:80"
         links:
             - mariadb
-```
-
-or more specifically 
-```
-        volumes : 
-          - volume-scripts-sql:/var/www/scripts/docker-init.d/sql
-          - volume-scripts-php:/var/www/scripts/docker-init.d/php
 ```
