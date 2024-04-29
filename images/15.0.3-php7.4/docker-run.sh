@@ -172,6 +172,26 @@ function initializeDatabase()
   echo "Enable user module ..."
   php /var/www/scripts/docker-init.php
 
+  if [ -d /var/www/scripts/docker-init.d ] ; then
+    for file in /var/www/scripts/docker-init.d/*; do
+      [ ! -f $file ] && continue
+
+      # If extension is not in PHP SQL SH, we loop
+      isExec=$(echo "PHP SQL SH" | grep -wio ${file##*.})
+      [ -z "$isExec" ] && continue
+
+      echo "Importing custom ${isExec} from `basename ${file}` ..."
+      if [ "$isExec" == "SQL" ] ; then
+        sed -i 's/--.*//g;' ${file}
+        mysql -u ${DOLI_DB_USER} -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} -P ${DOLI_DB_HOST_PORT} ${DOLI_DB_NAME} < ${file} > /dev/null 2>&1
+      elif [ "$isExec" == "PHP" ] ; then
+        php $file
+      elif [ "$isExec" == "SH" ] ; then
+        /bin/bash $file
+      fi
+    done
+  fi
+
   # Update ownership after initialisation of modules
   chown -R www-data:www-data /var/www/documents
 }

@@ -33,12 +33,12 @@ if (!empty(getenv('DOLI_COMPANY_COUNTRYCODE'))) {
     if ($res > 0 ) {
         $s = $country->id.':'.$country->code.':'.$country->label;
         dolibarr_set_const($db, "MAIN_INFO_SOCIETE_COUNTRY", $s, 'chaine', 0, '', $conf->entity);
-        printf('Configuring for country : '.$s);
+        printf('Configuring for country : '.$s."\n");
         activateModulesRequiredByCountry($country->code);
         $db->commit();
     }
     else {
-            printf('Unable to find country '.$countryCode);
+            printf('Unable to find country '.$countryCode."\n");
     }
 }
 
