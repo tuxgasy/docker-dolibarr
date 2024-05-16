@@ -8,6 +8,30 @@ activateModule('modUser');
 printf("OK\n");
 
 
+if (!empty(getenv('DOLI_COMPANY_COUNTRYCODE'))) {
+  require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+  require_once DOL_DOCUMENT_ROOT.'/core/class/ccountry.class.php';
+  $countryCode = getenv('DOLI_COMPANY_COUNTRYCODE');
+  $country = new Ccountry($db);
+  $res = $country->fetch(0,$countryCode);
+  if ($res > 0 ) {
+      $s = $country->id.':'.$country->code.':'.$country->label;
+      dolibarr_set_const($db, "MAIN_INFO_SOCIETE_COUNTRY", $s, 'chaine', 0, '', $conf->entity);
+      printf('Configuring for country : '.$s."\n");
+      activateModulesRequiredByCountry($country->code);
+      $db->commit();
+  }
+  else {
+          printf('Unable to find country '.$countryCode."\n");
+  }
+}
+
+if (!empty(getenv('DOLI_COMPANY_NAME'))) {
+  $compname = getenv('DOLI_COMPANY_NAME');
+  dolibarr_set_const($db, "MAIN_INFO_SOCIETE_NOM", $compname, 'chaine', 0, '', $conf->entity);
+  $db->commit();
+}
+
 if (!empty(getenv('DOLI_ENABLE_MODULES'))) {
   $mods = explode(',', getenv('DOLI_ENABLE_MODULES'));
   foreach ($mods as $mod) {
@@ -25,28 +49,4 @@ if (!empty(getenv('DOLI_ENABLE_MODULES'))) {
       print(" FAILED. Unable to find module. Be sure to check the case\n");
     }
   }
-}
-
-if (!empty(getenv('DOLI_COMPANY_COUNTRYCODE'))) {
-    require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
-    require_once DOL_DOCUMENT_ROOT.'/core/class/ccountry.class.php';
-    $countryCode = getenv('DOLI_COMPANY_COUNTRYCODE');
-    $country = new Ccountry($db);
-    $res = $country->fetch(0,$countryCode);
-    if ($res > 0 ) {
-        $s = $country->id.':'.$country->code.':'.$country->label;
-        dolibarr_set_const($db, "MAIN_INFO_SOCIETE_COUNTRY", $s, 'chaine', 0, '', $conf->entity);
-        printf('Configuring for country : '.$s."\n");
-        activateModulesRequiredByCountry($country->code);
-        $db->commit();
-    }
-    else {
-            printf('Unable to find country '.$countryCode."\n");
-    }
-}
-
-if (!empty(getenv('DOLI_COMPANY_NAME'))) {
-    $compname = getenv('DOLI_COMPANY_NAME');
-    dolibarr_set_const($db, "MAIN_INFO_SOCIETE_NOM", $compname, 'chaine', 0, '', $conf->entity);
-    $db->commit();
 }
