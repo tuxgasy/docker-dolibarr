@@ -7,19 +7,22 @@ printf("Activating module User... ");
 activateModule('modUser');
 printf("OK\n");
 
-if (!empty(getenv('DOLI_ENABLE_MODULES'))) {
-  $dirMods = array_keys(dolGetModulesDirs())[0];
 
+if (!empty(getenv('DOLI_ENABLE_MODULES'))) {
   $mods = explode(',', getenv('DOLI_ENABLE_MODULES'));
   foreach ($mods as $mod) {
-    $modName = 'mod'.$mod;
-    $modFile = $modName.'.class.php';
-    if (file_exists($dirMods.$modFile) ) {
-      printf("Activating module ".$mod." ...");
-      activateModule('mod' . $mod);
-      printf(" OK\n");
-    } else {
-      printf("Unable to find module : ".$modName."\n");
+    printf("Activating module ".$mod." ...");
+    try { 
+      $res = activateModule('mod' . $mod);
+      if ($res < 0) { 
+        print(" FAILED. Unable to find module. Be sure to check the case\n");
+      }
+      else {
+        printf(" OK\n");
+      }
+    }
+    catch (Throwable $t) {
+      print(" FAILED. Unable to find module. Be sure to check the case\n");
     }
   }
 }
