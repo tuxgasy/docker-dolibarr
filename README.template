@@ -139,7 +139,7 @@ It is possible to execute `*.sh`, `*.sql` and/or `*.php` custom file at the end 
 ```
 \docker-init.d
 |- custom_script.sql
-|- custom_script.php
+|- custom_script.php  // You should create your own module instead of doing this.
 |- custom_script.sh
 ```
 
