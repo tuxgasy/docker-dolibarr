@@ -38,15 +38,17 @@ if (!empty(getenv('DOLI_ENABLE_MODULES'))) {
     printf("Activating module ".$mod." ...");
     try { 
       $res = activateModule('mod' . $mod);
+    
       if ($res < 0) { 
-        print(" FAILED. Unable to find module. Be sure to check the case\n");
+        print(" FAILED. Unable to load module. Be sure to check the case\n");
       }
       else {
         printf(" OK\n");
       }
     }
     catch (Throwable $t) {
-      print(" FAILED. Unable to find module. Be sure to check the case\n");
+      print(" FAILED. Unable to load module. Be sure to check the case\n");
     }
+    
   }
 }

@@ -185,7 +185,6 @@ function initializeDatabase()
         sed -i 's/--.*//g;' ${file}
         mysql -u ${DOLI_DB_USER} -p${DOLI_DB_PASSWORD} -h ${DOLI_DB_HOST} -P ${DOLI_DB_HOST_PORT} ${DOLI_DB_NAME} < ${file} > /dev/null 2>&1
       elif [ "$isExec" == "PHP" ] ; then
-        # You should create your own module and activate it with DOLI_ENABLE_MODULES instead of doing that
         php $file
       elif [ "$isExec" == "SH" ] ; then
         /bin/bash $file
