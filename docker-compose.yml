@@ -8,8 +8,6 @@
 #
 # More information about Docker-compose : https://docs.docker.com/compose/
 
-version: "3.8"
-
 networks:
     internal-pod:
         internal: true
