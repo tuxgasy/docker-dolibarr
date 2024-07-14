@@ -132,8 +132,10 @@ Environment variables that are compatible with docker secrets:
 * `DOLI_CRON_USER` => `DOLI_CRON_USER_FILE`
 * `DOLI_INSTANCE_UNIQUE_ID` => `DOLI_INSTANCE_UNIQUE_ID_FILE`
 
-## Add post-deployment scripts
-It is possible to execute `*.sh`, `*.sql` and/or `*.php` custom file at the end of deployment by mounting a volume in `/var/www/scripts/docker-init.d`
+## Add post-deployment and before starting scripts
+It is possible to execute `*.sh`, `*.sql` and/or `*.php` custom file at the end of deployment or before starting Apache by mounting volumes.
+For scripts executed during deployment mount volume in `/var/www/scripts/docker-init.d`.
+For scripts executed before Apache stating mount volume in `/var/www/scripts/before-starting.d`.
 ```
 \docker-init.d
 |- custom_script.sql
@@ -141,7 +143,7 @@ It is possible to execute `*.sh`, `*.sql` and/or `*.php` custom file at the end 
 |- custom_script.sh
 ```
 
-Mount the volume with compose file : 
+Mount the volumes with compose file : 
 ```yaml
 services:
     mariadb:
@@ -161,6 +163,7 @@ services:
             PHP_INI_DATE_TIMEZONE: 'Europe/Paris'
         volumes :
           - volume-scripts:/var/www/scripts/docker-init.d
+          - before-starting-scripts:/var/www/scripts/before-starting.d
         ports:
             - "80:80"
         links:
