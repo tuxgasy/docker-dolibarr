@@ -36,8 +36,6 @@ Let's use [Docker Compose](https://docs.docker.com/compose/) to integrate it wit
 Create `docker-compose.yml` file as following:
 
 ```yaml
-version: "3"
-
 services:
     mariadb:
         image: mariadb:latest
@@ -151,8 +149,6 @@ It is possible to execute `*.sh`, `*.sql` and/or `*.php` custom file at the end 
 
 Mount the volume with compose file : 
 ```yaml
-version: "3"
-
 services:
     mariadb:
         image: mariadb:latest
