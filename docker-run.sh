@@ -278,16 +278,19 @@ DOLI_INSTANCE_UNIQUE_ID=$(get_env_value 'DOLI_INSTANCE_UNIQUE_ID' '')
 run
 
 set -e
+set -- apache2-foreground
 
+# Run crontab
 if [[ ${DOLI_CRON} -eq 1 ]]; then
-    echo "PATH=\$PATH:/usr/local/bin" > /etc/cron.d/dolibarr
-    echo "*/5 * * * * root /bin/su www-data -s /bin/sh -c '/var/www/scripts/cron/cron_run_jobs.php ${DOLI_CRON_KEY} ${DOLI_CRON_USER}' > /proc/1/fd/1 2> /proc/1/fd/2" >> /etc/cron.d/dolibarr
-    cron -f
-    exit 0
+  if [ -z "${DOLI_CRON_SCHEDULE}" ]; then
+     DOLI_CRON_SCHEDULE="* * * * *"
+  fi
+
+  echo "PATH=\$PATH:/usr/local/bin" > /etc/cron.d/dolibarr
+  echo "${DOLI_CRON_SCHEDULE} root /bin/su www-data -s /bin/sh -c '/var/www/scripts/cron/cron_run_jobs.php ${DOLI_CRON_KEY} ${DOLI_CRON_USER}' > /proc/1/fd/1 2> /proc/1/fd/2" >> /etc/cron.d/dolibarr
+
+  cron
 fi
 
-if [ "${1#-}" != "$1" ]; then
-  set -- apache2-foreground "$@"
-fi
-
-exec "$@"
+# Run apache server
+apache2-foreground

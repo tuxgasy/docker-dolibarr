@@ -122,9 +122,10 @@ When setup this way, to upgrade version the use of the web interface is mandator
 | **DOLI_LDAP_BIND_DN**           |                                | The complete DN of the user with read access on users
 | **DOLI_LDAP_BIND_PASS**         |                                | The password of the bind user
 | **DOLI_LDAP_DEBUG**             | *false*                        | Activate debug mode
-| **DOLI_CRON**                   | *0*                            | 1: Enable cron service
+| **DOLI_CRON**                   | *0*                            | 1: Enable cron service in background
 | **DOLI_CRON_KEY**               |                                | Security key launch cron jobs
 | **DOLI_CRON_USER**              |                                | Dolibarr user used for cron jobs
+| **DOLI_CRON_SCHEDULE**          |                                | Contab syntaxe to customise cron trigger 
 | **DOLI_INSTANCE_UNIQUE_ID**     |                                | Secret ID used as a salt / key for some encryption. By default, it is set randomly when the docker container is created.
 
 Some environment variables are compatible with docker secrets behaviour, just add the `_FILE` suffix to var name and point the value file to read.
